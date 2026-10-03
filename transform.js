@@ -217,7 +217,7 @@
         return {
           c, lv: AB[p.level], ls: p.level_sort, rk, role: p.role,
           lab: rk === 'Teacher' ? `${AB[p.level]} ${A} Teacher` : `${AB[p.level]} ${rk} ${A}`,
-          title: rk === 'Teacher' ? `${A} Teacher` : `${rk} ${A} Director`,
+          title: rk === 'Teacher' ? `${A} Teacher` : `${rk} ${A} ${A === 'Cheer' ? 'Coach' : 'Director'}`,
           n: list.filter(f => f.include).length, list
         };
       }).filter(p => p.n > 0 && p.role !== 'Lead Teacher');
