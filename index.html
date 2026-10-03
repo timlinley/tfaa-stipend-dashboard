@@ -240,7 +240,7 @@ body:not(.pro) #you-card{grid-column:span 12}
 <script src="transform.js"></script>
 <script>
 // Where the dashboard loads survey results from (a Google Apps Script web app on the survey owner's account).
-const DATA_URL="";
+const DATA_URL="https://script.google.com/macros/s/AKfycbw8r6FLuUm2ZJGA4yL-Ls3N1kaBrvdM0Eudj6TDJF45p4FAZ6Rb0IgY3xdCi0FH07XK/exec";
 function startApp(DATA){const {D0,AREAS,PAY,SUPP,DQ,BANDPAY}=DATA;
 document.getElementById('loading').hidden=true;document.getElementById('app').hidden=false;
 let D=D0.map(r=>r.concat([null]));const BKT=null;
