@@ -223,7 +223,7 @@ body:not(.pro) #you-card{grid-column:span 12}
           <div class="c s6 adv"><span class="tag"><b>Column chart</b> · peers source · dimension: extra_days bucket (5-day bins) · Record Count</span>
             <div class="cmp"><h3 id="h-ch5">Extra days: how many districts give what</h3><div class="svgbox" id="ch5"></div></div></div>
           <div class="c s6 adv"><span class="tag"><b>Control + scorecards</b> · daily rate (number input parameter) · stipend + extra_days × rate</span>
-            <div class="cmp"><h3>Total package estimate</h3><p class="cap">Stipend plus extra days paid at the daily rate you enter in the left panel (Daily rate for extra days). The same rate is used for your district and every comparison district. This is an estimate for comparison, not a pay calculation.</p>
+            <div class="cmp"><h3>Total package estimate</h3><p class="cap">Stipend plus extra days, with each extra day paid at one daily rate that you choose. The same rate is used for your district and every comparison district. This is an estimate for comparison, not a pay calculation.</p>
               <div id="pk-out" style="margin-top:12px"></div></div></div>
           <div class="c adv" id="pay-card"><span class="tag"><b>Table</b> · peers source · pay_range · MIN(pay_low), MAX(pay_high), Median(midpoint) by contract_type · filter: pay_unit = Annual salary</span>
             <div class="cmp"><h3 id="h-pay">Extended Calendar and Administrator Salary Ranges</h3><p class="cap" id="pay-note"></p>
@@ -460,7 +460,7 @@ function render(){
     $('#ch5').innerHTML=dv.length||mineD!=null?s+'</svg>'+(mineD!=null?'<p class="cap">Your district is the orange bar.</p>':''):'<p class="cap">No comparison district gives extra days for this position.</p>';
     // total package estimate
     const rate=parseFloat($('#rate').value)||0,pk=r=>(r[PK]>0?r[PK]:0)+(r[CK+1]>0?r[CK+1]*rate:0),has=r=>r[PK]>0||r[CK+1]>0,pv=Pm.filter(has).map(pk).sort((x,y)=>x-y),pm=med(pv),mp=has(me)?pk(me):null;
-    $('#pk-out').innerHTML=!rate?'<p class="cap">Enter a daily rate above to see the estimate.</p>':!has(me)&&!pv.length?'<p class="cap">Neither your district nor the comparison districts report a stipend or extra days for this position.</p>':
+    $('#pk-out').innerHTML=!rate?'<p class="cap">To see the estimate, type a daily rate into <b>Daily rate for extra days</b> in the filter panel.</p>':!has(me)&&!pv.length?'<p class="cap">Neither your district nor the comparison districts report a stipend or extra days for this position.</p>':
       '<div class="tiles">'+tl('Your estimated package',mp==null?'—':fmt(mp),mp==null?'no stipend or extra days reported':`${fmt(me[PK]>0?me[PK]:0)} stipend + ${mineD||0} days × ${fmt(rate)}`)
       +tl('Median of comparison',pv.length?fmt(pm):'—',`${pv.length} comparison district${pv.length===1?'':'s'} with a stipend or extra days`)
       +tl('Your gap',mp==null||pm==null?'—':mp===pm?'Same':(mp>pm?'+':'−')+fmt(Math.abs(mp-pm)),'your package minus the median')+'</div>'})();
