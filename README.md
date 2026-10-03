@@ -4,6 +4,8 @@ The member-facing dashboard for the TFAA stipend survey, published with GitHub P
 https://timlinley.github.io/tfaa-stipend-dashboard/
 
 - `index.html` is the dashboard. It holds no survey data: results load from a data feed on the survey owner's Google account each time the page opens.
+- `transform.js` turns the raw survey answers from the feed into the tables the dashboard draws (latest response per district, 187-day conversion for extra days, outlier checks, content-area tagging).
+- `apps-script/Code.gs` is the data feed. It runs on the responses Sheet as a Google Apps Script web app and sends the answers without submitter names or emails. Archiving that deployment switches the dashboard off.
 - `embed.js` puts the dashboard on another site (the TFAA members area) in a frame that resizes to fit, so visitors scroll the page rather than a box.
 
 ## Embedding

@@ -237,9 +237,10 @@ body:not(.pro) #you-card{grid-column:span 12}
     </div>
   </div>
 </div>
+<script src="transform.js"></script>
 <script>
 // Where the dashboard loads survey results from (a Google Apps Script web app on the survey owner's account).
-const DATA_URL='';
+const DATA_URL="";
 function startApp(DATA){const {D0,AREAS,PAY,SUPP,DQ,BANDPAY}=DATA;
 document.getElementById('loading').hidden=true;document.getElementById('app').hidden=false;
 let D=D0.map(r=>r.concat([null]));const BKT=null;
@@ -522,7 +523,7 @@ function showMsg(t){document.getElementById('loading-msg').textContent=t}
 // Tell a hosting page (embed.js) how tall the dashboard is, so its window can fit without inner scrolling.
 if(window.parent!==window){const w=document.querySelector('.wrap.prod'),post=()=>parent.postMessage({tfaaStipendHeight:w.offsetTop+w.offsetHeight+24},'*');new ResizeObserver(post).observe(w);window.addEventListener('load',post)}
 (async()=>{if(!DATA_URL){showMsg('The survey data connection is being set up. Please check back soon.');return}
-  try{const r=await fetch(DATA_URL,{cache:'no-store'});if(!r.ok)throw new Error(r.status);startApp(await r.json())}
-  catch(e){showMsg('The survey results could not be loaded right now. Please refresh the page or try again later.')}})();
+  try{const r=await fetch(DATA_URL,{cache:'no-store'});if(!r.ok)throw new Error(r.status);const raw=await r.json();if(raw.error)throw new Error(raw.error);startApp(TFAA.buildData(raw))}
+  catch(e){console.error(e);showMsg('The survey results could not be loaded right now. Please refresh the page or try again later.')}})();
 </script>
 </body></html>
