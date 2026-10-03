@@ -310,7 +310,7 @@ function applyPos(){SLICE='';PI=AR.pos.findIndex(p=>p.lv===LV&&p.rk===RK);if(PI<
 function setArea(n){A=n;AR=AREAS[n];fillSel();applyPos()}
 $('#f-level').addEventListener('change',e=>{LV=e.target.value;if(VIEW==='area'){fillSel();applyPos()}render()});
 $('#f-pos').addEventListener('change',e=>{RK=e.target.value;if(VIEW==='area')applyPos();render()});
-const svgOpen=(w,h,l)=>`<svg viewBox="0 0 ${w} ${h}" width="100%" role="img" aria-label="${l}">`;
+const svgOpen=(w,h,l)=>`<svg viewBox="0 0 ${w} ${h}" width="100%" style="display:block;margin:0 auto;max-width:${Math.round(w*1.25)}px" role="img" aria-label="${l}">`;
 function peers(noSlice){return D.filter(r=>(noSlice||!SLICE||VIEW!=='area'||r[14]===SLICE)&&(CMP.size?CMP.has(r[0]):(SL.every(([id])=>{const s=rng[id],v=r[s.k];return v==null||(v>=s.a&&v<=s.b)})&&DD.every(([id,k])=>{const v=$('#'+id).value;return !v||r[k]===v})&&(!MIX.size||mixOf(r).some(o=>MIX.has(o)))&&MSF.every(([id,k,s])=>!s.size||s.has(r[k]))&&(!LEAD.size||LEAD.has(r[11]))&&(VIEW!=='area'||!COMP.size||COMPO.some(([n,bit])=>COMP.has(n)&&(r[CK]&bit))))))}
 function altView(P,me){
   const meIdx=+$('#dist').value;let h='';
