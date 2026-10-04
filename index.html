@@ -175,7 +175,7 @@ body:not(.pro) #you-card{grid-column:span 12}
       <div class="layout" id="app" hidden>
 
         <aside class="side" aria-label="Filters">
-          <div class="grp" style="flex-direction:row;align-items:center;justify-content:space-between;gap:8px"><label class="sw" for="pro"><input type="checkbox" id="pro" role="switch" aria-checked="false"><span class="knob" aria-hidden="true"></span><span>Power user view</span></label><button class="clear" id="clear-top" type="button">Reset selections</button></div>
+          <div class="grp" style="flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 8px"><label class="sw" for="pro" style="white-space:nowrap"><input type="checkbox" id="pro" role="switch" aria-checked="false"><span class="knob" aria-hidden="true"></span><span>Show Advanced Metrics</span></label><button class="clear" id="clear-top" type="button">Reset selections</button></div>
           <div class="grp">
             <div class="fl"><span class="tag"><b>Drop-down</b> · your-district source · district_name</span>
               <label for="dist">Your District</label><select id="dist"></select><span class="cap" id="dist-n" style="font-size:.78rem"></span></div>
@@ -516,7 +516,7 @@ $('#rate').addEventListener('input',render);
 let OWN=true;$('#alt').addEventListener('change',e=>{if(e.target.id==='own'){OWN=e.target.checked;render()}});
 let PRO=false;try{PRO=localStorage.getItem('tfaa-pro')==='1'}catch(e){}
 function setPro(on){PRO=on;document.body.classList.toggle('pro',on);const c=$('#pro');c.checked=on;c.setAttribute('aria-checked',String(on));try{localStorage.setItem('tfaa-pro',on?'1':'0')}catch(e){}
-  if(!on){// clear anything only power users can set, so no hidden filter stays on
+  if(!on){// clear anything only the advanced view can set, so no hidden filter stays on
     SL.forEach(([id])=>{if(id==='enroll')return;const r=rng[id];$('#'+id+'-min').value=r.lo;$('#'+id+'-max').value=r.hi;r.a=r.lo;r.b=r.hi});DD.forEach(([id])=>$('#'+id).value='');
     [[COMP,'f-comp'],[MIX,'f-mix'],[LEAD,'f-lead'],[CMP,'f-cmp'],[MSF[2][2],'f-tea']].forEach(([st,id])=>{st.clear();document.querySelectorAll('#'+id+'-l input').forEach(c=>c.checked=false);$('#'+id+'-s').textContent='All'});
     SLICE='';$('#rate').value='';if(VIEW==='oth'||VIEW==='dq'){goTab('District Overview');return}}
