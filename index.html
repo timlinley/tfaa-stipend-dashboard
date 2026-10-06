@@ -192,6 +192,13 @@ body:not(.pro) #you-card{grid-column:span 12}
 .chipx{font:inherit;font-size:.85rem;padding:4px 10px;border:1px solid var(--brass);border-radius:999px;background:var(--surface);color:var(--brass);cursor:pointer;font-weight:600}
 .backbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:10px 14px;border-radius:8px;background:var(--brass-soft);font-size:.9rem}.backbar span{color:var(--muted)}
 @media (max-width:600px){.dlist .dtag{display:none}.drillbox{padding:12px 10px;gap:8px}.dlist td,.dlist th{padding:6px 5px}.dlist td:first-child{min-width:0}.dlist th{font-size:.68rem;letter-spacing:.03em}.seg button{padding:4px 10px}}
+
+select{-webkit-appearance:none;appearance:none;padding-right:34px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1.5 1.5 7 7l5.5-5.5' fill='none' stroke='%23586279' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:14px 9px;text-overflow:ellipsis}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1.5 1.5 7 7l5.5-5.5' fill='none' stroke='%239ba6bd' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}}
+:root[data-theme="dark"] select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1.5 1.5 7 7l5.5-5.5' fill='none' stroke='%239ba6bd' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+.ms summary{padding-right:34px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1.5 1.5 7 7l5.5-5.5' fill='none' stroke='%23586279' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:14px 9px}
+.ms[open] summary{background-image:none}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ms summary{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1.5 1.5 7 7l5.5-5.5' fill='none' stroke='%239ba6bd' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}:root:not([data-theme="light"]) .ms[open] summary{background-image:none}}
 .tag{display:none!important}
 .wrap.prod{padding:0;max-width:none}
 .loading{padding:48px 24px;text-align:center;color:var(--muted)}
