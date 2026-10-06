@@ -16,7 +16,7 @@
  */
 
 // The Google sign-in Client ID from Google Cloud Console (ends in .apps.googleusercontent.com).
-const CLIENT_ID = '';
+const CLIENT_ID = '863874017666-o6i3q2p6o1pjnv0flvh0r34l78rgl68h.apps.googleusercontent.com';
 const REQUIRE_SIGN_IN = true;
 const TESTERS_TAB = 'Testers';
 
