@@ -227,6 +227,12 @@ select{-webkit-appearance:none;appearance:none;padding-right:34px;background-ima
 .signin a{color:var(--brass);font-weight:600}
 .board.locked .tabs{display:none}
 @media (max-width:600px){.loading{padding:28px 14px}.signin{border:0;padding:4px 0;background:none}}
+.czfoot{display:flex;justify-content:flex-end;padding:12px 18px;border-top:1px solid var(--line);background:var(--bg)}
+.cz{display:inline-flex;align-items:center;gap:10px;white-space:nowrap}
+.czd{width:38px;height:38px;flex:none}
+.czt{display:flex;flex-direction:column;line-height:1.05}
+.czt small{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.czt b{font:700 1.05rem var(--f-display);letter-spacing:.06em;text-transform:uppercase;color:var(--ink)}
 </style></head><body>
 <div class="wrap prod">
 <h2 id="mock-h" hidden></h2><button id="lbl" hidden></button>
@@ -303,6 +309,7 @@ select{-webkit-appearance:none;appearance:none;padding-right:34px;background-ima
         </div>
       </div>
     </div>
+    <div class="czfoot"><span class="cz"><img class="czd" alt="" width="38" height="38" src="cadenza-diamond.png"><span class="czt"><small>Powered by</small><b>Cadenza</b></span></span></div>
   </div>
 </div>
 <script src="https://accounts.google.com/gsi/client" async></script>
