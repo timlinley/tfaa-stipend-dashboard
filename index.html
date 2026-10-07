@@ -360,11 +360,16 @@ const NM=v=>{const st=[100,250,500,1000,1500,2000,2500,3000,4000,5000,7500,10000
 const PM=()=>Math.max(1000,...D.flatMap(r=>POS.map(p=>r[p[0]]||0)));
 let VIEW='area',A='Band',AR=AREAS.Band,PK=17,PI=0,POS=[],LV='',RK='';
 const RO=['Head','Associate','Assistant','Teacher'],LVO=['ES','MS','HS'];
+const levelOfT=t=>/\b(HS|High School)\b/i.test(t)?'HS':/\b(MS|Middle School|Junior High)\b/i.test(t)?'MS':/\b(ES|Elementary)\b/i.test(t)?'ES':'';
+const suppOk=s=>(!LV||levelOfT(s[2])===LV)&&(!RK||s[2]===RK);
 const PH=t=>`<option value="">${t}</option>`;
 const optsHtml=(a)=>a.map(([v,t])=>`<option value="${v}">${t}</option>`).join('');
-function fillSel(){const lv=$('#f-level'),pr=$('#f-pos');lv.disabled=pr.disabled=VIEW==='oth'||VIEW==='dq';$('#f-comp').style.pointerEvents=VIEW==='area'?'':'none';$('#f-comp').style.opacity=VIEW==='area'?'':'.5';
+function fillSel(){const lv=$('#f-level'),pr=$('#f-pos');lv.disabled=pr.disabled=VIEW==='dq';$('#f-comp').style.pointerEvents=VIEW==='area'?'':'none';$('#f-comp').style.opacity=VIEW==='area'?'':'.5';
   if(VIEW==='area'){const lvs=LVO.filter(l=>AR.pos.some(p=>p.lv===l));if(!lvs.includes(LV))LV='';lv.innerHTML=PH('Select a level')+optsHtml(lvs.map(l=>[l,{ES:'Elementary School (ES)',MS:'Middle School (MS)',HS:'High School (HS)'}[l]]));lv.value=LV;
     const ps=AR.pos.filter(p=>p.lv===LV);if(!ps.some(p=>p.rk===RK))RK='';pr.innerHTML=PH('Select a position')+optsHtml(ps.map(p=>[p.rk,p.title]));pr.value=RK}
+  else if(VIEW==='oth'){const T=[...new Set(SUPP.map(s=>s[2]))],lvs=LVO.filter(l=>T.some(t=>levelOfT(t)===l));if(!lvs.includes(LV))LV='';
+    lv.innerHTML=PH('All levels')+optsHtml(lvs.map(l=>[l,{ES:'Elementary School (ES)',MS:'Middle School (MS)',HS:'High School (HS)'}[l]]));lv.value=LV;
+    const ts=T.filter(t=>!LV||levelOfT(t)===LV).sort((x,y)=>x.localeCompare(y));if(!ts.includes(RK))RK='';pr.innerHTML=PH('All stipends')+optsHtml(ts.map(t=>[t,t]));pr.value=RK}
   else{lv.innerHTML=PH(VIEW==='over'?'All levels':'Select a level')+optsHtml(LVO.map(l=>[l,{ES:'Elementary School (ES)',MS:'Middle School (MS)',HS:'High School (HS)'}[l]]));lv.value=LV;pr.innerHTML=PH(VIEW==='over'?'All positions':'Select a position')+optsHtml(RO.map(r=>[r,r==='Teacher'?'Teacher':'Head / Associate / Assistant'.split(' / ')[RO.indexOf(r)]||r]));pr.value=RK}}
 let SORT={k:0,d:1},SLICE='',OS={k:'a',d:1};
 function allHead(){if(![0,1,...POS.map(p=>p[0])].includes(SORT.k))SORT={k:0,d:1};
@@ -380,7 +385,7 @@ function applyPos(){SLICE='';PI=AR.pos.findIndex(p=>p.lv===LV&&p.rk===RK);if(PI<
   $('#tag-ch3').textContent=AR.pos[PI].c;$('#tag-ch2').textContent=AR.pos[PI].c;
   allHead()}
 function setArea(n){A=n;AR=AREAS[n];fillSel();applyPos()}
-$('#f-level').addEventListener('change',e=>{LV=e.target.value;if(VIEW==='area'){fillSel();applyPos()}render()});
+$('#f-level').addEventListener('change',e=>{LV=e.target.value;if(VIEW==='area'){fillSel();applyPos()}else if(VIEW==='oth')fillSel();render()});
 $('#f-pos').addEventListener('change',e=>{RK=e.target.value;if(VIEW==='area')applyPos();render()});
 const svgOpen=(w,h,l)=>`<svg viewBox="0 0 ${w} ${h}" width="100%" style="display:block;margin:0 auto;max-width:${Math.round(w*1.25)}px" role="img" aria-label="${l}">`;
 function peers(noSlice){return D.filter(r=>(noSlice||!SLICE||VIEW!=='area'||r[14]===SLICE)&&(CMP.size?CMP.has(r[0]):(SL.every(([id])=>{const s=rng[id],v=r[s.k];return v==null||(v>=s.a&&v<=s.b)})&&DD.every(([id,k])=>{const v=$('#'+id).value;return !v||r[k]===v})&&(!MIX.size||mixOf(r).some(o=>MIX.has(o)))&&MSF.every(([id,k,s])=>!s.size||s.has(r[k]))&&(!LEAD.size||LEAD.has(r[11]))&&(VIEW!=='area'||!COMP.size||COMPO.some(([n,bit])=>COMP.has(n)&&(r[CK]&bit))))))}
@@ -490,9 +495,9 @@ function altView(P,me){
     h='<span class="tag"><b>Table</b> · data_quality · district, item, entered value, issue</span><div class="cmp"><h3>Data checks: entries held out or adjusted</h3><p class="cap">Amounts that look like typos or odd entries are shown here and left out of the medians. Extra days entered as a total contract length (over 60) are counted as the days above the 187-day minimum contract. Click a district name in the drop-down to review your own entries.</p><div class="tbl scroll"><table class="mapt"><thead><tr><th>District</th><th>Item</th><th class="r">Entered</th><th>Issue</th></tr></thead><tbody>'
       +(rows.map(r=>`<tr><td>${D[r[0]][0]}</td><td>${r[2]}</td><td class="r">${r[3]}</td><td>${r[4]}</td></tr>`).join('')||'<tr><td colspan="4">No flagged entries for these filters.</td></tr>')+'</tbody></table></div></div>';
   }else{
-    const g={};SUPP.forEach(([i,a,t,x])=>{if(P.includes(D[i])){(g[a+'|'+t]=g[a+'|'+t]||{a,t,v:[],me:null}).v.push(x);}if(i===meIdx){(g[a+'|'+t]=g[a+'|'+t]||{a,t,v:[],me:null}).me=x}});
+    const g={};SUPP.filter(suppOk).forEach(([i,a,t,x])=>{if(P.includes(D[i])){(g[a+'|'+t]=g[a+'|'+t]||{a,t,v:[],me:null}).v.push(x);}if(i===meIdx){(g[a+'|'+t]=g[a+'|'+t]||{a,t,v:[],me:null}).me=x}});
     const rows=Object.values(g).filter(o=>o.v.length||o.me!=null).sort((x,y)=>x.a.localeCompare(y.a)||y.v.length-x.v.length);
-    h='<span class="tag"><b>Table</b> · peers source · supplemental_stipend · Record Count, Median(amount)</span><div class="cmp"><h3>Supplemental Stipends (sponsors, clubs and extras)</h3><p class="cap">Extra duties districts pay on top of the main positions. Counts follow the filters.</p><div class="tbl scroll"><table class="mapt"><thead><tr><th>Content area</th><th>Stipend</th><th class="r">Districts</th><th class="r">Median</th><th class="r">Lowest</th><th class="r">Highest</th><th class="r">Your District</th></tr></thead><tbody>'
+    h='<span class="tag"><b>Table</b> · peers source · supplemental_stipend · Record Count, Median(amount)</span><div class="cmp"><h3>Supplemental Stipends (sponsors, clubs and extras)</h3><p class="cap">Extra duties districts pay on top of the main positions. Counts follow the filters.'+(LV?' Stipend titles that do not name a level are hidden while a level is chosen.':'')+'</p><div class="tbl scroll"><table class="mapt"><thead><tr><th>Content area</th><th>Stipend</th><th class="r">Districts</th><th class="r">Median</th><th class="r">Lowest</th><th class="r">Highest</th><th class="r">Your District</th></tr></thead><tbody>'
       +(rows.map(o=>`<tr><td>${o.a}</td><td>${o.t}</td><td class="r">${o.v.length}</td><td class="r">${fmt(med(o.v))}</td><td class="r">${fmt(mn(o.v))}</td><td class="r">${fmt(mx(o.v))}</td><td class="r">${fmt(o.me)}</td></tr>`).join('')||'<tr><td colspan="7">No supplemental stipends reported for these filters.</td></tr>')+'</tbody></table></div></div>';
   }
   $('#alt').innerHTML=h;sizeDrill();
@@ -504,7 +509,7 @@ let DKEY='';
 function refreshDist(){
   let ok=D.map((r,i)=>i);
   if(VIEW==='area'&&LV&&RK)ok=ok.filter(i=>AR.m[i][PI]>0);
-  else if(VIEW==='oth')ok=[...new Set(SUPP.map(s=>s[0]))];
+  else if(VIEW==='oth')ok=[...new Set(SUPP.filter(suppOk).map(s=>s[0]))];
   else if(VIEW==='dq')ok=[...new Set(DQ.map(s=>s[0]))];
   if(!ok.length)ok=D.map((r,i)=>i);
   ok.sort((x,y)=>D0[x][0].localeCompare(D0[y][0]));
