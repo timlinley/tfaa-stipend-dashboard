@@ -228,6 +228,17 @@ select{-webkit-appearance:none;appearance:none;padding-right:34px;background-ima
 .signin p.signin-note{font-size:.82rem;line-height:1.45;text-align:center}
 .board.locked .tabs{display:none}
 @media (max-width:600px){.loading{padding:28px 14px}.signin{border:0;padding:4px 0;background:none}}
+.probox{position:relative;display:flex;flex-direction:column;gap:6px;padding:12px;border:1px solid var(--brass);border-left-width:4px;border-radius:8px;background:var(--brass-soft)}
+.probox .sw{font-size:.95rem;white-space:nowrap}
+.probox .sw .knob{width:42px;height:24px;border-radius:12px;background:var(--dot)}
+.probox .sw .knob::after{width:20px;height:20px}
+.probox .sw input:checked+.knob{background:var(--brass)}
+.probox .sw input:checked+.knob::after{left:20px}
+.pro-new{position:absolute;top:-9px;right:10px;font:700 .68rem var(--f-body);letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border-radius:4px;background:var(--accent);color:#fff}
+.pro-help{margin:0;font-size:.8rem;line-height:1.35;color:var(--muted);white-space:normal}
+.probox.cue{animation:procue 1.6s ease-in-out 3}
+@keyframes procue{0%,100%{box-shadow:0 0 0 0 rgba(181,40,46,0)}50%{box-shadow:0 0 0 5px rgba(181,40,46,.35)}}
+@media (prefers-reduced-motion:reduce){.probox.cue{animation:none}}
 .czfoot{display:flex;justify-content:flex-end;padding:12px 18px;border-top:1px solid var(--line);background:var(--bg)}
 .cz{display:inline-flex;align-items:center;gap:10px;white-space:nowrap}
 .czd{width:38px;height:38px;flex:none}
@@ -245,7 +256,8 @@ select{-webkit-appearance:none;appearance:none;padding-right:34px;background-ima
       <div class="layout" id="app" hidden>
 
         <aside class="side" aria-label="Filters">
-          <div class="grp" style="flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 8px"><label class="sw" for="pro" style="white-space:nowrap"><input type="checkbox" id="pro" role="switch" aria-checked="false"><span class="knob" aria-hidden="true"></span><span>Show Advanced Metrics</span></label><button class="clear" id="clear-top" type="button">Reset selections</button></div>
+          <div class="probox" id="probox"><label class="sw" for="pro"><input type="checkbox" id="pro" role="switch" aria-checked="false" aria-describedby="pro-help"><span class="knob" aria-hidden="true"></span><span>Show Advanced Metrics</span></label><span class="pro-new" id="pro-new" hidden>New</span><p class="pro-help" id="pro-help">For compensation analysis: more filters, columns and charts.</p></div>
+          <div class="grp" style="flex-direction:row;justify-content:flex-end"><button class="clear" id="clear-top" type="button">Reset selections</button></div>
           <div class="grp">
             <div class="fl"><span class="tag"><b>Drop-down</b> · your-district source · district_name</span>
               <label for="dist">Your District</label><select id="dist"></select><span class="cap" id="dist-n" style="font-size:.78rem"></span></div>
@@ -662,7 +674,11 @@ function setPro(on){PRO=on;document.body.classList.toggle('pro',on);const c=$('#
     [[COMP,'f-comp'],[MIX,'f-mix'],[LEAD,'f-lead'],[CMP,'f-cmp'],[MSF[2][2],'f-tea']].forEach(([st,id])=>{st.clear();document.querySelectorAll('#'+id+'-l input').forEach(c=>c.checked=false);$('#'+id+'-s').textContent='All'});
     SLICE='';$('#rate').value='';if(VIEW==='dq'){goTab('District Overview');return}}
   render()}
-$('#pro').addEventListener('change',e=>setPro(e.target.checked));
+$('#pro').addEventListener('change',e=>{setPro(e.target.checked);proSeen()});
+// first-visit cue on the Advanced switch: badge plus a short pulse until it is used once
+let PSEEN=true;try{PSEEN=localStorage.getItem('tfaa-pro-seen')==='1'||localStorage.getItem('tfaa-pro')!==null}catch(e){}
+function proSeen(){if(PSEEN)return;PSEEN=true;$('#pro-new').hidden=true;$('#probox').classList.remove('cue');try{localStorage.setItem('tfaa-pro-seen','1')}catch(e){}}
+if(!PSEEN){$('#pro-new').hidden=false;$('#probox').classList.add('cue')}
 document.body.classList.toggle('pro',PRO);$('#pro').checked=PRO;$('#pro').setAttribute('aria-checked',String(PRO));
 $('#resp-n').textContent=D.length;$('#resp-w').hidden=false;
 goTab('District Overview');
