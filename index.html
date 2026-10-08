@@ -160,7 +160,7 @@ body:not(.pro) #you-card{grid-column:span 12}
 .nodays .dcol{display:none}
 .area-note{border-left:4px solid var(--brass);background:var(--surface);padding:12px 16px;border-radius:8px}
 .area-note p{font-size:.92rem;color:var(--ink);margin:0}
-#cheer-note[hidden]{display:none!important}
+#cheer-note[hidden],#dance-note[hidden]{display:none!important}
 [hidden]{display:none!important}
 
 .stbtn{font:inherit;font-size:.85rem;font-weight:600;display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:999px;border:1px solid currentColor;background:var(--surface);cursor:pointer;color:var(--brass);white-space:nowrap}
@@ -287,7 +287,8 @@ select{-webkit-appearance:none;appearance:none;padding-right:34px;background-ima
         <div class="gate" id="gate" hidden></div>
         <div class="canvas" id="canvas" style="min-width:0">
           <div class="c" id="alt"></div>
-          <div class="c area-note" id="cheer-note" hidden><p><b>About Cheer stipends.</b> This page only includes districts where Cheer is managed by the Fine Arts department and the cheer coach is a full-time position. In other districts, cheer stipends are listed on the <a href="#" class="go" data-a="Supplemental Stipends">Supplemental Stipends</a> tab.</p></div>
+          <div class="c area-note" id="cheer-note" hidden><p><b>About Cheer Stipends.</b> This page only includes districts where Cheer is managed by the Fine Arts department and the cheer coach is a full-time position. In other districts, cheer stipends are listed on the <a href="#" class="go" data-a="Supplemental Stipends">Supplemental Stipends</a> tab.</p></div>
+          <div class="c area-note" id="dance-note" hidden><p><b>About Drill Team Stipends.</b> In some districts, dance stipends may or may not include Drill Team responsibilities. For districts that specifically noted that their Drill Team duties are covered by separate "Drill Team Sponsor" stipends, those stipends are listed on the <a href="#" class="go" data-a="Supplemental Stipends">Supplemental Stipends</a> tab.</p></div>
           <div class="c s6"><span class="tag"><b>Scorecard</b> · peers source · Record Count of districts</span><div class="cmp"><span class="cap">Districts matching your filters</span><span class="match" id="n"></span></div></div>
           <div class="c s6"><span class="tag"><b>Scorecard</b> · peers source · Median(hs_head_band)</span><div class="cmp"><span class="cap" id="t-p1">HS head band stipend, median of matches</span><span class="match" id="t1"></span></div></div>
           <div class="c s6"><span class="tag"><b>Scorecard</b> · your-district source · MAX(value)</span><div class="cmp"><span class="cap" id="t-p2">HS head band stipend, your district</span><span class="match" id="t2"></span></div></div>
@@ -549,11 +550,11 @@ function render(){
   refreshDist();refreshCmp();
   const need=[];if($('#dist').value==='')need.push('Your District');if(VIEW==='area'){if(!LV)need.push('Level');if(!RK)need.push('Position')}
   const gate=$('#gate');gate.hidden=!need.length;$('#canvas').hidden=!!need.length;
-  if(need.length){gate.innerHTML=(VIEW==='area'&&A==='Cheer'?'<div class="area-note" style="margin-bottom:16px">'+$('#cheer-note').innerHTML+'</div>':'')+`<h3>Start by Choosing ${need.join(', ').replace(/, ([^,]*)$/,need.length>2?', and $1':' and $1')}</h3><p>Pick ${need.length>1?'them':'it'} in the filters and the results will appear here.</p>`;$('#n').textContent=`${peers().length} of ${D.length}`;syncSliders();return}
+  if(need.length){gate.innerHTML=(VIEW==='area'&&(A==='Cheer'||A==='Dance')?'<div class="area-note" style="margin-bottom:16px">'+$(A==='Cheer'?'#cheer-note':'#dance-note').innerHTML+'</div>':'')+`<h3>Start by Choosing ${need.join(', ').replace(/, ([^,]*)$/,need.length>2?', and $1':' and $1')}</h3><p>Pick ${need.length>1?'them':'it'} in the filters and the results will appear here.</p>`;$('#n').textContent=`${peers().length} of ${D.length}`;syncSliders();return}
   syncSliders();
   const P=peers(),me=D[+$('#dist').value],vals=k=>P.map(r=>r[k]);
   $('#n').textContent=`${P.length} of ${D.length}`;
-  $('#canvas').classList.toggle('alt',VIEW!=='area');$('#cheer-note').hidden=!(VIEW==='area'&&A==='Cheer');$('#backbar').hidden=!(VIEW==='area'&&RET);if(RET)$('#backbar').innerHTML=BACK();
+  $('#canvas').classList.toggle('alt',VIEW!=='area');$('#cheer-note').hidden=!(VIEW==='area'&&A==='Cheer');$('#dance-note').hidden=!(VIEW==='area'&&A==='Dance');$('#backbar').hidden=!(VIEW==='area'&&RET);if(RET)$('#backbar').innerHTML=BACK();
   if(VIEW!=='area'){altView(P,me);return}
   const m=med(vals(PK));$('#t1').textContent=P.length?fmt(m):'No matches';$('#t2').textContent=me[PK]==null?(isSal(me)?salTag(me):'Not offered'):fmt(me[PK]);
   const d=me[PK]!=null&&m!=null?me[PK]-m:null;const t3=$('#t3');t3.textContent=d==null?'—':(d>=0?'+':'−')+fmt(Math.abs(d));t3.className='match '+(d==null?'':d>=0?'pos':'neg');
@@ -635,7 +636,7 @@ function render(){
 document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>goTab(b.dataset.t)));
 function goTab(t){LV='';RK='';DRILL=null;TF='';RET=null;VIEW=t==='District Overview'?'over':t==='Supplemental Stipends'?'oth':t==='Data checks'?'dq':'area';if(VIEW==='area')setArea(t);else fillSel();
   document.querySelectorAll('.tabs button').forEach(x=>{const on=x.dataset.t===t;x.classList.toggle('on',on);x.setAttribute('aria-selected',on)});$('#mock-h').textContent=t+' page with filters';$('#rpt-t').textContent=VIEW==='area'?t+' Stipends':t;render()}
-['#cheer-note','#gate'].forEach(s=>$(s).addEventListener('click',e=>{const a=e.target.closest('.go');if(a){e.preventDefault();goTab(a.dataset.a)}}));
+['#cheer-note','#dance-note','#gate'].forEach(s=>$(s).addEventListener('click',e=>{const a=e.target.closest('.go');if(a){e.preventDefault();goTab(a.dataset.a)}}));
 $('#alt').addEventListener('click',e=>{const a=e.target.closest('.go');if(a){e.preventDefault();goTab(a.dataset.a)}});
 const TIP=document.createElement('div');TIP.id='tip';TIP.setAttribute('role','tooltip');document.body.appendChild(TIP);
 document.addEventListener('mousemove',e=>{const t=e.target.closest&&e.target.closest('.tp');if(!t){TIP.style.display='none';return}TIP.textContent=t.dataset.tip;TIP.style.display='block';const w=TIP.offsetWidth;TIP.style.left=Math.min(e.clientX+12,innerWidth-w-8)+'px';TIP.style.top=(e.clientY-34)+'px'});
