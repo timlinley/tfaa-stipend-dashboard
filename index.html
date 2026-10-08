@@ -397,7 +397,7 @@ function allHead(){if(![0,1,...POS.map(p=>p[0])].includes(SORT.k))SORT={k:0,d:1}
 const MODELS=[['Stipend only','var(--brass)'],['Extra Days only','var(--you)'],['Stipend and Extra Days','var(--stripe-2)'],['Extended Calendar','var(--dot)'],['Administrator Salary','var(--stripe-1)']];
 const modelOf=c=>c&8?'Administrator Salary':c&4?'Extended Calendar':(c&1&&c&2)?'Stipend and Extra Days':c&1?'Stipend only':c&2?'Extra Days only':null;
 const isSal=r=>r[14]==='Administrator Salary'||r[14]==='Extended Calendar';
-const salTag=r=>r[14]==='Administrator Salary'?'Admin':'Extended';
+const salTag=r=>r[14]==='Administrator Salary'?'Administrative Contract':'Extended Contract';
 function applyPos(){SLICE='';PI=AR.pos.findIndex(p=>p.lv===LV&&p.rk===RK);if(PI<0)PI=0;PK=15+PI;POS=AR.pos.map((p,j)=>[15+j,p.lab,p]).filter(p=>p[2].lv===LV);
   CK=15+AR.pos.length;D=D0.map((r,i)=>[...r,null,...AR.v[i],AR.m[i][PI],AR.x[i][PI]]);D.forEach(r=>{r[14]=modelOf(r[CK])});renderComp();
   const pl=AR.pos[PI].lab;$('#h-ch4').textContent=`${pl} Compensation Models`;$('#t-p1').textContent=`${pl} stipend, median of matches`;$('#t-p2').textContent=`${pl} stipend, your district`;
