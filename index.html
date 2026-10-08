@@ -621,7 +621,7 @@ function render(){
 }
 document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>goTab(b.dataset.t)));
 function goTab(t){LV='';RK='';DRILL=null;TF='';RET=null;VIEW=t==='District Overview'?'over':t==='Supplemental Stipends'?'oth':t==='Data checks'?'dq':'area';if(VIEW==='area')setArea(t);else fillSel();
-  document.querySelectorAll('.tabs button').forEach(x=>{const on=x.dataset.t===t;x.classList.toggle('on',on);x.setAttribute('aria-selected',on)});$('#mock-h').textContent=t+' page with filters';$('#rpt-t').textContent=VIEW==='area'?t+' stipends':t==='District Overview'?'All content areas':t;render()}
+  document.querySelectorAll('.tabs button').forEach(x=>{const on=x.dataset.t===t;x.classList.toggle('on',on);x.setAttribute('aria-selected',on)});$('#mock-h').textContent=t+' page with filters';$('#rpt-t').textContent=VIEW==='area'?t+' stipends':t;render()}
 ['#cheer-note','#gate'].forEach(s=>$(s).addEventListener('click',e=>{const a=e.target.closest('.go');if(a){e.preventDefault();goTab(a.dataset.a)}}));
 $('#alt').addEventListener('click',e=>{const a=e.target.closest('.go');if(a){e.preventDefault();goTab(a.dataset.a)}});
 const TIP=document.createElement('div');TIP.id='tip';TIP.setAttribute('role','tooltip');document.body.appendChild(TIP);
