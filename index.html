@@ -682,7 +682,7 @@ $('#alt').addEventListener('click',e=>{const t=e.target;let b;
 $('#alt').addEventListener('keydown',e=>{if(e.key==='Escape'&&DRILL){const d=DRILL;DRILL=null;render();focusPill(d)}});
 function goBack(){const r=RET;goTab('District Overview');if(r){DRILL=r.DRILL;TF=r.TF;OWN=r.OWN;render();const p=focusPill(DRILL);p&&p.closest('tr').scrollIntoView({block:'center'})}}
 ['#backbar','#gate'].forEach(s=>$(s).addEventListener('click',e=>{if(e.target.closest('.backbtn')){e.preventDefault();goBack()}}));
-let OWN=true,SOWN=false;$('#alt').addEventListener('change',e=>{if(e.target.id==='sown'){SOWN=e.target.checked;render()}});$('#alt').addEventListener('change',e=>{if(e.target.id==='own'){OWN=e.target.checked;render()}});
+let OWN=true,SOWN=true;$('#alt').addEventListener('change',e=>{if(e.target.id==='sown'){SOWN=e.target.checked;render()}});$('#alt').addEventListener('change',e=>{if(e.target.id==='own'){OWN=e.target.checked;render()}});
 let PRO=false;try{PRO=localStorage.getItem('tfaa-pro')==='1'}catch(e){}
 function setPro(on){PRO=on;document.body.classList.toggle('pro',on);const c=$('#pro');c.checked=on;c.setAttribute('aria-checked',String(on));try{localStorage.setItem('tfaa-pro',on?'1':'0')}catch(e){}
   if(!on){// clear anything only the advanced view can set, so no hidden filter stays on
