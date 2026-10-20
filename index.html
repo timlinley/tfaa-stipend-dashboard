@@ -313,6 +313,7 @@ select{-webkit-appearance:none;appearance:none;padding-right:34px;background-ima
           <div class="c s6 adv"><span class="tag"><b>Control + scorecards</b> · daily rate (number input parameter) · stipend + extra_days × rate</span>
             <div class="cmp"><h3>Total Package Estimate</h3><p class="cap">Stipend plus extra days, with each extra day paid at one daily rate that you choose. The same rate is used for your district and every comparison district. This is an estimate for comparison, not a pay calculation.</p>
               <div id="pk-out" style="margin-top:12px"></div></div></div>
+          <div class="c adv"><div class="cmp"><h3 id="h-xt">Districts Giving Extra Days</h3><p class="cap" id="xt-note"></p><div class="tbl scroll" style="max-height:420px;overflow:auto"><table id="xt" class="mapt"><thead><tr><th>District</th><th class="r">Extra Days</th><th>Also Pays a Stipend?</th><th class="r">Stipend</th></tr></thead><tbody></tbody></table></div></div></div>
           <div class="c adv" id="pay-card"><span class="tag"><b>Table</b> · peers source · pay_range · MIN(pay_low), MAX(pay_high), Median(midpoint) by contract_type · filter: pay_unit = Annual salary</span>
             <div class="cmp"><h3 id="h-pay">Extended Calendar and Administrator Salary Ranges</h3><p class="cap" id="pay-note"></p>
               <div class="tbl"><table id="pay-sum" class="mapt"><thead><tr><th>Contract</th><th class="r">Districts reporting</th><th class="r">Lowest reported</th><th class="r">Highest reported</th><th class="r">Median midpoint</th></tr></thead><tbody></tbody></table></div>
@@ -611,6 +612,11 @@ function render(){
     cn.forEach((c,i)=>{const h=(HH-HT-HB)*c/hm,lb=`${i*5+1}-${i*5+5}`;s+=`<rect x="${HL+bw*i+1}" y="${HH-HB-h}" width="${bw-2}" height="${h}" fill="${i===yb?'var(--you)':'var(--brass)'}" class="tp" data-tip="${lb} days: ${c} district${c===1?'':'s'}${i===yb?' (includes your district)':''}"/>`;s+=`<text x="${HL+bw*i+bw/2}" y="${HH-HB+14}" text-anchor="middle" style="font-size:10px">${lb}</text>`});
     s+=`<text x="${(HL+HW)/2}" y="${HH-4}" text-anchor="middle">Extra Contract Days</text>`;
     $('#ch5').innerHTML=dv.length||mineD!=null?s+'</svg>'+(mineD!=null?'<p class="cap">Your district is the orange bar.</p>':''):'<p class="cap">No comparison district gives extra days for this position.</p>';
+    // table of districts giving extra days
+    const xr=P.filter(r=>r[CK+1]>0).sort((x,y)=>y[CK+1]-x[CK+1]||x[0].localeCompare(y[0]));
+    $('#h-xt').textContent=`${pl} Districts Giving Extra Days`;
+    $('#xt-note').textContent=xr.length?`${xr.length} district${xr.length===1?'':'s'} give extra days for this position${mineD!=null?'; yours is highlighted':''}. ${xr.filter(r=>r[PK]>0).length} also pay a stipend. Most days first.`:'No district in the current comparison gives extra days for this position.';
+    $('#xt tbody').innerHTML=xr.map(r=>`<tr${r===me?' style="font-weight:700;background:var(--you-bg,rgba(230,120,30,.12))"':''}><td>${r[0]}${r===me?' (yours)':''}</td><td class="r">${Math.round(r[CK+1]*10)/10}</td><td>${r[PK]>0?'Yes':'No'}</td><td class="r">${r[PK]>0?fmt(r[PK]):'—'}</td></tr>`).join('')||'<tr><td colspan="4">None</td></tr>';
     // total package estimate
     const rate=parseFloat($('#rate').value)||0,pk=r=>(r[PK]>0?r[PK]:0)+(r[CK+1]>0?r[CK+1]*rate:0),has=r=>r[PK]>0||r[CK+1]>0,pv=Pm.filter(has).map(pk).sort((x,y)=>x-y),pm=med(pv),mp=has(me)?pk(me):null;
     $('#pk-out').innerHTML=!rate?'<p class="cap">To see the estimate, type a daily rate into <b>Daily rate for extra days</b> in the filter panel.</p>':!has(me)&&!pv.length?'<p class="cap">Neither your district nor the comparison districts report a stipend or extra days for this position.</p>':
