@@ -215,6 +215,12 @@ select{-webkit-appearance:none;appearance:none;padding-right:34px;background-ima
 .dual input[type=range]:focus-visible{outline:none}
 .dual input[id$="-min"]{z-index:1}.dual input[id$="-max"]{z-index:2}.dual.minTop input[id$="-min"]{z-index:3}
 .rng .vals{margin-top:2px}
+.nrng{display:flex;align-items:flex-end;gap:8px}.nrng>span{padding-bottom:7px;color:var(--muted);font-size:.85rem}
+.nrng label{flex:1;display:flex;flex-direction:column;gap:2px;font-size:.72rem;color:var(--muted)}
+.nrng input{box-sizing:border-box;width:100%;font:inherit;font-size:.95rem;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font-variant-numeric:tabular-nums}
+.nrng input:focus-visible{outline:2px solid var(--brass);outline-offset:1px}
+.nrng input[aria-invalid=true]{border-color:var(--accent)}
+.nerr{font-size:.78rem;color:var(--accent)}.nerr:empty{display:none}
 .tag{display:none!important}
 .wrap.prod{padding:0;max-width:none}
 .loading{padding:48px 24px;text-align:center;color:var(--muted)}
@@ -271,7 +277,7 @@ select{-webkit-appearance:none;appearance:none;padding-right:34px;background-ima
             <div class="fl adv"><span class="tag"><b>Drop-down</b> · lead_stipend_model</span><label for="f-lsm">Lead Teacher</label><select id="f-lsm"></select></div>
           
 <div class="fl adv"><span class="tag"><b>Drop-down</b> · multi-select · district_name · all districts</span><span class="lab">Choose Your Own Comparison Districts</span><details class="ms" id="f-cmp"><summary id="f-cmp-s">All</summary><div class="msl" id="f-cmp-l"></div></details><span class="cap" style="font-size:.78rem">Pick the districts you want to compare against. When any are chosen, the other comparison filters and sliders are ignored.</span></div>
-<h4 class="subh">Sliders</h4><p class="cap">Drag Min and Max to include only districts between the two values.</p>
+<h4 class="subh">District Size</h4><p class="cap">Type a Min and Max enrollment<span class="adv">, or drag the sliders,</span> to include only districts between the two values. Leave a box blank for no limit.</p>
             <div id="sliders" style="display:flex;flex-direction:column;gap:12px"></div>
           </div>
           <button class="clear" id="clear" type="button">Clear all filters</button>
@@ -338,6 +344,17 @@ const SL=[['enroll','Enrollment',1,v=>num(v)],['camp','Total campuses',2,v=>num(
 const rng={};
 SL.forEach(([id,l,k,f])=>{const a=D.map(r=>r[k]).filter(v=>v!=null);const lo=Math.min(...a),hi=Math.max(...a);rng[id]={lo,hi,k,f,a:lo,b:hi};
   const el=document.createElement('div');el.className='rng'+(id==='enroll'?'':' adv');
+  if(id==='enroll'){// typed Min/Max: the range is too wide for a slider to hit exact numbers
+    el.innerHTML=`<span class="tag"><b>Text entry</b> · enrollment · blank = no limit</span><span class="lab" style="font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">${l}</span><div class="nrng"><label>Min<input type="text" inputmode="numeric" autocomplete="off" id="${id}-min" placeholder="${num(lo)}" aria-describedby="${id}-err"></label><span aria-hidden="true">to</span><label>Max<input type="text" inputmode="numeric" autocomplete="off" id="${id}-max" placeholder="${num(hi)}" aria-describedby="${id}-err"></label></div><span class="nerr" id="${id}-err" role="status"></span>`;
+    $('#sliders').appendChild(el);
+    const mi=el.querySelector('#'+id+'-min'),ma=el.querySelector('#'+id+'-max'),er=el.querySelector('#'+id+'-err');
+    const rd=i=>{const t=i.value.replace(/[,\s]/g,'');return t===''?null:/^\d+$/.test(t)?+t:NaN};
+    let tm;const upd=()=>{const a=rd(mi),b=rd(ma),ba=Number.isNaN(a),bb=Number.isNaN(b),sw=!ba&&!bb&&a!=null&&b!=null&&a>b;
+      mi.setAttribute('aria-invalid',String(ba||sw));ma.setAttribute('aria-invalid',String(bb||sw));
+      er.textContent=ba||bb?'Enter whole numbers only, like 12,500. That box is ignored until it is fixed.':sw?'Min is larger than Max, so enrollment is not being filtered.':'';
+      rng[id].a=ba||sw||a==null?lo:a;rng[id].b=bb||sw||b==null?hi:b;render()};
+    [mi,ma].forEach(i=>{i.addEventListener('input',()=>{clearTimeout(tm);tm=setTimeout(upd,300)});i.addEventListener('change',()=>{clearTimeout(tm);const v=rd(i);if(v!=null&&!Number.isNaN(v))i.value=num(v);upd()})});
+    return}
   el.innerHTML=`<span class="tag"><b>Slider</b> · ${['enrollment','campuses','hs_campuses','central_staff'][SL.findIndex(s=>s[0]===id)]}</span><span class="lab" style="font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">${l}</span><div class="dual"><div class="dtrack"><div class="dfill"></div></div><input type="range" id="${id}-min" min="${lo}" max="${hi}" step="1" value="${lo}" aria-label="${l} minimum"><input type="range" id="${id}-max" min="${lo}" max="${hi}" step="1" value="${hi}" aria-label="${l} maximum"></div>
   <div class="vals"><span id="${id}-a"></span><span id="${id}-b"></span></div>`;
   $('#sliders').appendChild(el);
@@ -365,7 +382,7 @@ msel('f-lead',LV0,LEAD);
 const CMP=new Set();msel('f-cmp',D0.map(r=>r[0]).sort((x,y)=>x.localeCompare(y)).map(v=>({v,n:1,h:1})),CMP);
 $('#dist').innerHTML=D.map((r,i)=>`<option value="${i}">${r[0]}</option>`).join('');
 $('#dist').value='';$('#dist').addEventListener('change',render);
-function resetAll(){SL.forEach(([id])=>{const r=rng[id];$('#'+id+'-min').value=r.lo;$('#'+id+'-max').value=r.hi;r.a=r.lo;r.b=r.hi});DD.forEach(([id])=>$('#'+id).value='');COMP.clear();[[MIX,'f-mix'],[LEAD,'f-lead'],[CMP,'f-cmp'],...MSF.map(([id,k,s])=>[s,id])].forEach(([s,id])=>{s.clear();document.querySelectorAll('#'+id+'-l input').forEach(c=>c.checked=false);$('#'+id+'-s').textContent='All'});LV='';RK='';SLICE='';$('#dist').value='';$('#rate').value='';if(VIEW==='area'){fillSel();applyPos()}else fillSel();render()}
+function resetAll(){SL.forEach(([id])=>{const r=rng[id];$('#'+id+'-min').value=id==='enroll'?'':r.lo;$('#'+id+'-max').value=id==='enroll'?'':r.hi;r.a=r.lo;r.b=r.hi});$('#enroll-err').textContent='';['#enroll-min','#enroll-max'].forEach(x=>$(x).setAttribute('aria-invalid','false'));DD.forEach(([id])=>$('#'+id).value='');COMP.clear();[[MIX,'f-mix'],[LEAD,'f-lead'],[CMP,'f-cmp'],...MSF.map(([id,k,s])=>[s,id])].forEach(([s,id])=>{s.clear();document.querySelectorAll('#'+id+'-l input').forEach(c=>c.checked=false);$('#'+id+'-s').textContent='All'});LV='';RK='';SLICE='';$('#dist').value='';$('#rate').value='';if(VIEW==='area'){fillSel();applyPos()}else fillSel();render()}
 $('#clear').addEventListener('click',resetAll);
 const kk=t=>t>=1000?'$'+(Math.round(t/100)/10)+'k':'$'+Math.round(t);
 const NM=v=>{const st=[100,250,500,1000,1500,2000,2500,3000,4000,5000,7500,10000,15000,20000,25000];return 4*(st.find(x=>x*4>=v)||v/4)};
@@ -534,7 +551,7 @@ function refreshDist(){
 function refreshCmp(){const d=$('#dist').value,me=d===''?null:D0[+d][0];let ch=false;
   document.querySelectorAll('#f-cmp-l label').forEach(l=>{const i=l.querySelector('input'),own=i.value===me;l.hidden=own;if(own&&i.checked){i.checked=false;CMP.delete(i.value);ch=true}});
   if(ch)$('#f-cmp-s').textContent=CMP.size>3?CMP.size+' selected':CMP.size?[...CMP].join('; '):'All'}
-function syncSliders(){SL.forEach(([id])=>{const r=rng[id],d=$('#'+id+'-min').closest('.dual'),sp=r.hi-r.lo||1,p=v=>(100*(v-r.lo)/sp).toFixed(2);$('#'+id+'-a').textContent=r.f(r.a);$('#'+id+'-b').textContent=r.f(r.b);
+function syncSliders(){SL.forEach(([id])=>{if(id==='enroll')return;const r=rng[id],d=$('#'+id+'-min').closest('.dual'),sp=r.hi-r.lo||1,p=v=>(100*(v-r.lo)/sp).toFixed(2);$('#'+id+'-a').textContent=r.f(r.a);$('#'+id+'-b').textContent=r.f(r.b);
     d.style.setProperty('--lo',p(r.a)+'%');d.style.setProperty('--hi',p(r.b)+'%');d.classList.toggle('minTop',r.a-r.lo>sp/2)})}
 function render(){
   refreshDist();refreshCmp();
