@@ -18,6 +18,14 @@
   a.href=base;a.target='_blank';a.rel='noopener';a.textContent='Open the dashboard in its own window';
   a.setAttribute('style','display:inline-block;margin-top:8px;font-size:14px');
   box.appendChild(a);
+  // keep the dashboard header in view: the frame is as tall as the dashboard, so tell it how far the page has scrolled.
+  // If the site has its own fixed header, set data-offset on the script tag to that header's height in pixels.
+  var off=parseInt(me.getAttribute('data-offset')||'0',10)||0;
+  function tell(){f.contentWindow&&f.contentWindow.postMessage({tfaaTop:f.getBoundingClientRect().top,offset:off},origin)}
+  window.addEventListener('scroll',tell,{passive:true});window.addEventListener('resize',tell);
+  window.addEventListener('message',function(e){
+    if(e.origin===origin&&e.source===f.contentWindow&&e.data&&e.data.tfaaStipendReady)tell();
+  });
   window.addEventListener('message',function(e){
     if(e.origin!==origin||e.source!==f.contentWindow||!e.data||typeof e.data.tfaaStipendHeight!=='number')return;
     f.style.height=Math.ceil(e.data.tfaaStipendHeight)+'px';
