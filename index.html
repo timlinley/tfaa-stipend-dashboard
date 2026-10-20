@@ -394,7 +394,7 @@ const levelOfT=t=>/\b(HS|High School)\b/i.test(t)?'HS':/\b(MS|Middle School|Juni
 const suppOk=s=>(!LV||levelOfT(s[2])===LV)&&(!RK||s[2]===RK);
 const PH=t=>`<option value="">${t}</option>`;
 const optsHtml=(a)=>a.map(([v,t])=>`<option value="${v}">${t}</option>`).join('');
-function fillSel(){const lv=$('#f-level'),pr=$('#f-pos');lv.disabled=pr.disabled=VIEW==='dq';$('#f-comp').style.pointerEvents=VIEW==='area'?'':'none';$('#f-comp').style.opacity=VIEW==='area'?'':'.5';
+function fillSel(){const lv=$('#f-level'),pr=$('#f-pos');lv.disabled=pr.disabled=VIEW==='dq';$('#f-comp').closest('.fl').hidden=VIEW!=='area';
   if(VIEW==='area'){const lvs=LVO.filter(l=>AR.pos.some(p=>p.lv===l));if(!lvs.includes(LV))LV='';lv.innerHTML=PH('Select a level')+optsHtml(lvs.map(l=>[l,{ES:'Elementary School (ES)',MS:'Middle School (MS)',HS:'High School (HS)'}[l]]));lv.value=LV;
     const ps=AR.pos.filter(p=>p.lv===LV);if(!ps.some(p=>p.rk===RK))RK='';pr.innerHTML=PH('Select a position')+optsHtml(ps.map(p=>[p.rk,p.title]));pr.value=RK}
   else if(VIEW==='oth'){const T=[...new Set(SUPP.map(s=>s[2]))],lvs=LVO.filter(l=>T.some(t=>levelOfT(t)===l));if(!lvs.includes(LV))LV='';
