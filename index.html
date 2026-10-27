@@ -272,10 +272,6 @@ select{-webkit-appearance:none;appearance:none;padding-right:34px;background-ima
 .hsec ul{padding-left:20px;display:flex;flex-direction:column;gap:4px}
 .hsec a{color:var(--brass)}
 .hui{color:var(--ink);background:var(--brass-soft);padding:0 4px;border-radius:3px;font-weight:600}
-.hnote{margin-top:10px;padding:8px 12px;border-left:4px solid var(--you);background:var(--you-soft);border-radius:0 6px 6px 0;max-width:72ch}
-.hcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
-.hcard{border:1px solid var(--line);border-radius:8px;padding:12px}
-.hcard h4{font:700 1rem var(--f-display);margin-bottom:4px}
 .hempty{color:var(--muted);padding:12px 0}
 .help mark{background:#ffe58a;color:#14213d;padding:0 1px}
 </style></head><body>
@@ -737,65 +733,43 @@ goTab('District Overview');
 }
 // ---------- Help tab (Tim 10/27, modeled on the Richardson Help tab: one guide, search, grouped side list) ----------
 // Name on-screen labels exactly as they appear. When a label or page changes, update its topic here in the same PR.
-const hui=s=>`<b class="hui">${s}</b>`,hwarn=s=>`<div class="hnote"><b>Good to know.</b> ${s}</div>`,htip=s=>`<div class="hnote tip"><b>Tip.</b> ${s}</div>`;
+const hui=s=>`<b class="hui">${s}</b>`;
 const htbl=(h,rows)=>`<div class="tbl"><table class="mapt htbl"><thead><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(x=>`<td>${x}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
-const hto=(id,l)=>`<a href="#${id}" class="hlk">${l}</a>`;
 const HELP_TFAA='kimblann@tfaa.org';
 const HELP=[
- {g:'Getting started',id:'h-what',t:'What this dashboard shows',b:`
-  <p>The results of the TFAA Stipend Survey: what TFAA member districts pay Fine Arts staff in stipends and extra contract days, position by position. Each district's Fine Arts leader answered the survey for their district.</p>
-  <ul><li>Each district counts once. If a district sent the survey more than once, its latest answers are used.</li>
-  <li>Names and email addresses from the survey are never shown.</li>
-  <li>The count of responding districts is in the header, next to the page title.</li></ul>`},
+ {g:'Getting started',id:'h-what',t:'What this shows',b:`
+  <p>TFAA Stipend Survey results: stipends and extra contract days for Fine Arts positions in member districts. One response per district (the newest). Names and emails are never shown.</p>`},
  {g:'Getting started',id:'h-dist',t:'Pick your district',b:`
-  <p>Choose your district in ${hui('Your District')} at the top of the filter panel. Every page then compares your district with the others. Your district is never counted in its own comparison group.</p>
-`},
- {g:'Getting started',id:'h-adv',t:'Basic and Advanced Metrics',b:`
-  <p>The dashboard opens in Basic view. Turn on ${hui('Show Advanced Metrics')} at the top of the filter panel to see more filters, columns and charts, plus the ${hui('Data checks')} tab. The dashboard remembers your choice on this device.</p>
-  ${hwarn('Turning Advanced Metrics off clears the filters that only Advanced view uses, so nothing hidden keeps narrowing your results.')}`},
- {g:'Reading the pages',id:'h-over',t:'District Overview',b:`
-  <p>Your district's whole picture across every content area.</p>
-  <ul><li>${hui('How Your Compensation Compares')}: how many of your positions are below market, within range or above market. Select a rating to see the details.</li>
-  <li>${hui('Positions Below Market')}: where your stipend or extra days fall under the market range. A starting point for a conversation with your compensation office.</li>
-  <li>${hui('Positions Most Districts Pay That You Do Not')} and ${hui('Positions You Pay That Few Districts Do')}: positions where your district differs from most others.</li>
-  <li>${hui('Position-by-Position Comparison')}: every position, with your stipend, the median, the gap and the rating. Select a tile above it to filter the table; select it again to clear.</li></ul>`},
- {g:'Reading the pages',id:'h-area',t:'Content area pages (Band, Choir, Art and the rest)',b:`
-  <p>Each content area has its own page. Pick a ${hui('Level')} and ${hui('Position')} in the filter panel to choose what you're comparing.</p>
-  <ul><li>The four boxes at the top show how many districts match your filters, their median stipend, your stipend, and the difference.</li>
-  <li>${hui('Stipend by Position: Matching Districts and Your District')} shows the lowest, median and highest stipend for each position, with your district beside them.</li>
-  <li>${hui('Extra Contract Days')} shows the same comparison for extra days.</li>
-  <li>${hui('Matching Districts')} lists every district in the comparison. Select a column heading to sort.</li></ul>
-  <p>Cheer and Dance pages each have a note at the top about which stipends they include.</p>`},
- {g:'Reading the pages',id:'h-supp',t:'Supplemental Stipends',b:`
-  <p>Stipends for sponsors, clubs and extras that aren't a director position, such as Jazz Director, Art Club Sponsor or Cheer Sponsor. Use ${hui('Level')} and ${hui('Position')} to narrow the list.</p>
-  <p>The ${hui('Only what [your district] offers')} switch shows only the stipends your district also pays. Turn it off to see every stipend reported.</p>
-  ${hwarn('Stipends whose title names no level, such as Jazz Director, appear only under All levels.')}`},
- {g:'Reading the pages',id:'h-dq',t:'Data checks (Advanced)',b:`
-  <p>Entries that look like typos are kept out of the medians and ratings and listed on this tab, so one mistake can't skew the results.</p>
-  <p>If one of your district's entries is listed here, check it and, if it needs to change, see ${hto('h-update',"Updating your district's answers")}.</p>`},
+  <p>Choose it in ${hui('Your District')} at the top of the filter panel. Every page then compares it with the other districts.</p>`},
+ {g:'Getting started',id:'h-adv',t:'Advanced Metrics',b:`
+  <p>Turn on ${hui('Show Advanced Metrics')} for more filters, charts and the ${hui('Data checks')} tab. Turning it off clears the Advanced filters.</p>`},
  {g:'Getting started',id:'h-update',t:"Updating your district's answers",b:`
-  <p>If your district's stipends change, or an answer needs updating, send your district's answers through the TFAA Stipend Survey form again. The dashboard always uses each district's newest answers, so your updated numbers replace the old ones within a few minutes.</p>
-  ${htip(`Not sure which answers are on file for your district? Ask TFAA (see ${hto('h-help','Getting help')}).`)}`},
- {g:'Filters',id:'h-cmp',t:'Choosing who you compare against',b:`
-  <p>The ${hui('Comparison Filters')} narrow the districts your figures are compared against: ${hui('TMEA/UIL Region')}, ${hui('Geographic Zone')} and, in Advanced view, ${hui('TEA Service Center Region')}, ${hui('Compensation Models')}, ${hui('Additional Campus Models')}, ${hui('Fine Arts Central Staff')} and ${hui('Lead Teacher')}.</p>
-  <p>Under ${hui('District Size')}, type a Min and Max enrollment to include only districts in that range. Leave a box blank for no limit.</p>
-  <p>In Advanced view, ${hui('Choose Your Own Comparison Districts')} lets you pick exact districts. When any are chosen, only those are compared.</p>`},
- {g:'Filters',id:'h-reset',t:'Starting over',b:`
-  <p>${hui('Reset selections')} at the top of the filter panel and ${hui('Clear all filters')} at the bottom do the same thing: they clear every filter, your ${hui('Level')} and ${hui('Position')} picks, and ${hui('Your District')}.</p>`},
- {g:'How the numbers work',id:'h-rules',t:'Rules behind the numbers',b:`
-  <ul><li><b>Median, not average.</b> The median is the middle district: half pay more, half pay less. A few very high or very low entries can't pull it the way they pull an average.</li>
-  <li><b>Comparison group.</b> Every district that matches your filters, minus your own.</li>
-  <li><b>Market range.</b> The middle half of comparison districts that pay the position (25th to 75th percentile). Under it is Below market, over it is Above market, and in between is Within range.</li>
-  <li><b>Stipends and extra days are rated separately.</b> Turning days into dollars would mean guessing a daily rate for every district, so each part is rated only against districts that offer it.</li>
-  <li><b>Extra days.</b> An entry over 60 is read as total contract days; the days above the 187-day minimum contract are counted.</li>
-  <li><b>Small sample.</b> A rating needs at least 5 comparison districts. With fewer, the dashboard says Small sample.</li>
-  <li><b>Administrative Contract and Extended Contract.</b> Some districts pay a position through a salaried or extended contract instead of a stipend. Those show by name, not as $0, and are left out of the ratings.</li>
-  <li><b>Not offered.</b> A blank or $0 entry means the district doesn't offer that stipend. It isn't counted as $0 in the medians.</li></ul>`},
+  <p>Submit the survey form again. Your newest answers replace the old ones within a few minutes.</p>`},
+ {g:'Pages',id:'h-over',t:'District Overview',b:`
+  <ul><li>${hui('How Your Compensation Compares')}: your positions by rating. Select a rating to list them.</li>
+  <li>${hui('Position-by-Position Comparison')}: every position. Select a tile above the table to filter it; select it again to clear.</li></ul>`},
+ {g:'Pages',id:'h-area',t:'Content area pages',b:`
+  <p>Pick a ${hui('Level')} and ${hui('Position')}. Select a column heading in ${hui('Matching Districts')} to sort.</p>`},
+ {g:'Pages',id:'h-supp',t:'Supplemental Stipends',b:`
+  <p>Sponsor, club and other stipends. ${hui('Only what [your district] offers')} limits the list to stipends your district pays. Stipends with no level in the title show under All levels.</p>`},
+ {g:'Pages',id:'h-dq',t:'Data checks (Advanced)',b:`
+  <p>Entries that look like typos. They're left out of medians and ratings.</p>`},
+ {g:'Filters',id:'h-cmp',t:'Comparison Filters',b:`
+  <p>Narrow the districts you're compared with by region, size and more. ${hui('Choose Your Own Comparison Districts')} (Advanced) compares only the districts you pick.</p>
+  <p>${hui('Reset selections')} and ${hui('Clear all filters')} clear everything, including ${hui('Your District')}.</p>`},
+ {g:'How the numbers work',id:'h-rules',t:'Definitions',b:`
+  ${htbl(['Term','Meaning'],[
+   ['Median','The middle district: half pay more, half less.'],
+   ['Market range','25th to 75th percentile of districts that pay the position.'],
+   ['Below / Within / Above market','Under, inside or over the market range.'],
+   ['Small sample','Fewer than 5 comparison districts. No rating.'],
+   ['Extra days','Rated separately from stipends. Entries over 60 count only the days above 187.'],
+   ['Administrative or Extended Contract','Paid by contract instead of a stipend. Not rated.'],
+   ['Blank or $0','Not offered. Left out of medians.']])}`},
  {g:'How the numbers work',id:'h-pkg',t:'Total Package Estimate (Advanced)',b:`
-  <p>Adds a stipend and extra days together, paying each extra day at one daily rate that you type in ${hui('Daily rate for extra days (optional)')}. The same rate is used for every district. It's an estimate for comparison, not a pay calculation.</p>`},
+  <p>Stipend plus extra days at the daily rate you enter in ${hui('Daily rate for extra days (optional)')}.</p>`},
  {g:'Getting help',id:'h-help',t:'Getting help',b:`
-  <p>Questions about the survey, your district's answers or the dashboard itself all go to TFAA at <a href="mailto:${HELP_TFAA}">${HELP_TFAA}</a>.</p>
-  ${htip('Include the page you were on, your district and, if you can, a screenshot. It helps TFAA answer faster.')}`}];
+  <p>Email TFAA at <a href="mailto:${HELP_TFAA}">${HELP_TFAA}</a>. Include the page, your district and a screenshot.</p>`}];
 const hMark=(html,q)=>{if(!q)return html;const re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');return html.replace(/>([^<]+)</g,(m,t)=>'>'+t.replace(re,'<mark>$1</mark>')+'<')};
 function helpParts(q){q=(q||'').trim();const ql=q.toLowerCase();
   const list=HELP.filter(s=>!q||(s.t+' '+s.b).replace(/<[^>]+>/g,' ').toLowerCase().includes(ql));
