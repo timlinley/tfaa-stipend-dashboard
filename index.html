@@ -146,6 +146,7 @@ td.dz,th.dz{white-space:normal}
 .rpt .logo{height:52px}
 .rpt h3{font:700 1.5rem var(--f-display);color:var(--brass);letter-spacing:.01em}
 .rpt .cap{margin-left:auto}
+.help-link{color:var(--brass);font-weight:600;font-size:.92rem;text-decoration:underline;text-underline-offset:3px}
 .mm{font:600 .7rem var(--f-display);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-top:2px}
 body:not(.pro) .adv{display:none!important}
 body:not(.pro) #you-card{grid-column:span 12}
@@ -282,7 +283,7 @@ select{-webkit-appearance:none;appearance:none;padding-right:34px;background-ima
 <h2 id="mock-h" hidden></h2><button id="lbl" hidden></button>
 <div class="board nolabels locked">
     <div class="stk" id="stk"><div class="tabs" role="tablist" aria-label="Content areas"><button type="button" role="tab" data-t="District Overview" class="on" aria-selected="true">District Overview</button><button type="button" role="tab" data-t="Art">Art</button><button type="button" role="tab" data-t="Band">Band</button><button type="button" role="tab" data-t="Cheer">Cheer</button><button type="button" role="tab" data-t="Choir">Choir</button><button type="button" role="tab" data-t="Colorguard">Colorguard</button><button type="button" role="tab" data-t="Dance">Dance</button><button type="button" role="tab" data-t="Elementary Music">Elementary Music</button><button type="button" role="tab" data-t="Mariachi">Mariachi</button><button type="button" role="tab" data-t="Modern Band">Modern Band</button><button type="button" role="tab" data-t="Music Theory">Music Theory</button><button type="button" role="tab" data-t="Orchestra">Orchestra</button><button type="button" role="tab" data-t="Theatre">Theatre</button><button type="button" role="tab" data-t="Technical Theatre">Technical Theatre</button><button type="button" role="tab" data-t="Supplemental Stipends">Supplemental Stipends</button><button type="button" role="tab" data-t="Data checks" class="adv">Data checks</button><button type="button" role="tab" data-t="Help" class="help-tab">Help</button></div>
-    <div class="rpt"><div class="stripe"></div><div class="in"><img class="logo" alt="Texas Fine Arts Administrators" width="162" height="64" src="tfaa-logo.png"><h3 id="rpt-t">Stipend Survey Results</h3><span class="cap"><span class="tag">Image and rectangle components in the page header, repeated on every page · </span><span id="resp-w" hidden><span id="resp-n"></span> responding districts</span></span></div></div></div>
+    <div class="rpt"><div class="stripe"></div><div class="in"><img class="logo" alt="Texas Fine Arts Administrators" width="162" height="64" src="tfaa-logo.png"><h3 id="rpt-t">Stipend Survey Results</h3><a href="#" id="help-link" class="help-link" hidden>New here? See how to use this dashboard</a><span class="cap"><span class="tag">Image and rectangle components in the page header, repeated on every page · </span><span id="resp-w" hidden><span id="resp-n"></span> responding districts</span></span></div></div></div>
     <div class="board-body"><div class="loading" id="loading"><div id="busy"><h2>Loading the Stipend Survey Results…</h2><p id="loading-msg"></p></div></div>
       <div class="backbar" id="backbar" style="margin:14px 0 0" hidden></div>
       <div class="help" id="help" hidden></div>
@@ -680,7 +681,7 @@ function render(){if(VIEW==='help')return;
   $('#all tbody').innerHTML=srt.map(r=>`<tr><td>${r[0]}</td><td class="r">${num(r[1])}</td>${POS.map(p=>`<td class="r">${p[0]===PK&&r[p[0]]==null&&isSal(r)?salTag(r):cell(p[0],r[p[0]])}</td>`).join('')}</tr>`).join('');
 }
 document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>goTab(b.dataset.t)));
-function goTab(t){const help=t==='Help';$('#help').hidden=!help;$('#app').hidden=help;if(help){$('#backbar').hidden=true;VIEW='help';
+function goTab(t){const help=t==='Help';$('#help-link').hidden=t!=='District Overview';$('#help').hidden=!help;$('#app').hidden=help;if(help){$('#backbar').hidden=true;VIEW='help';
     document.querySelectorAll('.tabs button').forEach(x=>{const on=x.dataset.t===t;x.classList.toggle('on',on);x.setAttribute('aria-selected',on)});$('#rpt-t').textContent='Help';showHelp();return}
   LV='';RK='';DRILL=null;TF='';RET=null;VIEW=t==='District Overview'?'over':t==='Supplemental Stipends'?'oth':t==='Data checks'?'dq':'area';if(VIEW==='area')setArea(t);else fillSel();
   document.querySelectorAll('.tabs button').forEach(x=>{const on=x.dataset.t===t;x.classList.toggle('on',on);x.setAttribute('aria-selected',on)});$('#mock-h').textContent=t+' page with filters';$('#rpt-t').textContent=VIEW==='area'?t+' Stipends':t;render()}
@@ -739,7 +740,7 @@ goTab('District Overview');
 const hui=s=>`<b class="hui">${s}</b>`,hwarn=s=>`<div class="hnote"><b>Good to know.</b> ${s}</div>`,htip=s=>`<div class="hnote tip"><b>Tip.</b> ${s}</div>`;
 const htbl=(h,rows)=>`<div class="tbl"><table class="mapt htbl"><thead><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(x=>`<td>${x}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
 const hto=(id,l)=>`<a href="#${id}" class="hlk">${l}</a>`;
-const HELP_SUPPORT='support@cadenzastrategy.com',HELP_TFAA='kimblann@tfaa.org';
+const HELP_TFAA='kimblann@tfaa.org';
 const HELP=[
  {g:'Getting started',id:'h-what',t:'What this dashboard shows',b:`
   <p>The results of the TFAA Stipend Survey: what TFAA member districts pay Fine Arts staff in stipends and extra contract days, position by position. Each district's Fine Arts leader answered the survey for their district.</p>
@@ -771,7 +772,10 @@ const HELP=[
   ${hwarn('Stipends whose title names no level, such as Jazz Director, appear only under All levels.')}`},
  {g:'Reading the pages',id:'h-dq',t:'Data checks (Advanced)',b:`
   <p>Entries that look like typos are kept out of the medians and ratings and listed on this tab, so one mistake can't skew the results.</p>
-  <p>If one of your district's entries is listed here by mistake, see ${hto('h-help','Getting help')}.</p>`},
+  <p>If one of your district's entries is listed here, check it and, if it needs to change, see ${hto('h-update',"Updating your district's answers")}.</p>`},
+ {g:'Getting started',id:'h-update',t:"Updating your district's answers",b:`
+  <p>If your district's stipends change, or an answer needs updating, send your district's answers through the TFAA Stipend Survey form again. The dashboard always uses each district's newest answers, so your updated numbers replace the old ones within a few minutes.</p>
+  ${htip(`Not sure which answers are on file for your district? Ask TFAA (see ${hto('h-help','Getting help')}).`)}`},
  {g:'Filters',id:'h-cmp',t:'Choosing who you compare against',b:`
   <p>The ${hui('Comparison Filters')} narrow the districts your figures are compared against: ${hui('TMEA/UIL Region')}, ${hui('Geographic Zone')} and, in Advanced view, ${hui('TEA Service Center Region')}, ${hui('Compensation Models')}, ${hui('Additional Campus Models')}, ${hui('Fine Arts Central Staff')} and ${hui('Lead Teacher')}.</p>
   <p>Under ${hui('District Size')}, type a Min and Max enrollment to include only districts in that range. Leave a box blank for no limit.</p>
@@ -790,8 +794,8 @@ const HELP=[
  {g:'How the numbers work',id:'h-pkg',t:'Total Package Estimate (Advanced)',b:`
   <p>Adds a stipend and extra days together, paying each extra day at one daily rate that you type in ${hui('Daily rate for extra days (optional)')}. The same rate is used for every district. It's an estimate for comparison, not a pay calculation.</p>`},
  {g:'Getting help',id:'h-help',t:'Getting help',b:`
-  <div class="hcards"><div class="hcard"><h4>Questions about the survey or your district's answers</h4><p>Contact TFAA at <a href="mailto:${HELP_TFAA}">${HELP_TFAA}</a>.</p></div>
-  <div class="hcard"><h4>Something on the dashboard isn't working</h4><p>Email Cadenza at <a href="mailto:${HELP_SUPPORT}">${HELP_SUPPORT}</a>. Include the page you were on, your district, and a screenshot if you can.</p></div></div>`}];
+  <p>Questions about the survey, your district's answers or the dashboard itself all go to TFAA at <a href="mailto:${HELP_TFAA}">${HELP_TFAA}</a>.</p>
+  ${htip('Include the page you were on, your district and, if you can, a screenshot. It helps TFAA answer faster.')}`}];
 const hMark=(html,q)=>{if(!q)return html;const re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');return html.replace(/>([^<]+)</g,(m,t)=>'>'+t.replace(re,'<mark>$1</mark>')+'<')};
 function helpParts(q){q=(q||'').trim();const ql=q.toLowerCase();
   const list=HELP.filter(s=>!q||(s.t+' '+s.b).replace(/<[^>]+>/g,' ').toLowerCase().includes(ql));
@@ -806,6 +810,7 @@ function showHelp(){const p=helpParts('');
     <div class="hgrid"><aside class="hside" aria-label="Guide contents"><div class="lab">In this guide</div><ul class="htoc" id="htoc">${p.toc}</ul></aside><div class="hmain" id="hmain">${p.main}</div></div>`;
   document.querySelector('#hq').addEventListener('input',e=>{const p=helpParts(e.target.value);document.querySelector('#htoc').innerHTML=p.toc;document.querySelector('#hmain').innerHTML=p.main})}
 // in-guide jumps scroll inside the page (no hash change, so an embedded copy doesn't move its host page)
+document.getElementById('help-link').addEventListener('click',e=>{e.preventDefault();document.querySelector('.tabs [data-t="Help"]').click();window.scrollTo({top:document.querySelector('.board').offsetTop,behavior:'smooth'})});
 document.getElementById('help').addEventListener('click',e=>{const a=e.target.closest('a');if(!a)return;
   if(a.classList.contains('hlk')){e.preventDefault();const t=document.getElementById(a.getAttribute('href').slice(1));if(t)t.scrollIntoView({behavior:'smooth',block:'start'})}});
 function showMsg(t){document.getElementById('loading-msg').textContent=t}
