@@ -321,7 +321,7 @@ select{-webkit-appearance:none;appearance:none;padding-right:34px;background-ima
             <div class="fl adv"><span class="tag"><b>Drop-down</b> · multi-select · fine_arts_leadership</span><span class="lab">Fine Arts Central Staff</span><details class="ms" id="f-lead"><summary id="f-lead-s">All</summary><div class="msl" id="f-lead-l"></div></details></div>
             <div class="fl adv"><span class="tag"><b>Drop-down</b> · lead_stipend_model</span><label for="f-lsm">Lead Teacher</label><select id="f-lsm"></select></div>
           
-<div class="fl adv"><span class="tag"><b>Drop-down</b> · multi-select · district_name · all districts</span><span class="lab">Choose Your Own Comparison Districts</span><details class="ms" id="f-cmp"><summary id="f-cmp-s">All</summary><div class="msl" id="f-cmp-l"></div></details><span class="cap" style="font-size:.78rem">Pick the districts you want to compare against. When any are chosen, the other comparison filters and sliders are ignored.</span></div>
+<div class="fl"><span class="tag"><b>Drop-down</b> · multi-select · district_name · all districts</span><span class="lab">Choose Your Own Comparison Districts</span><details class="ms" id="f-cmp"><summary id="f-cmp-s">All</summary><div class="msl" id="f-cmp-l"></div></details><span class="cap" style="font-size:.78rem">Pick the districts you want to compare against. When any are chosen, the other comparison filters and sliders are ignored.</span></div>
 <h4 class="subh">District Size</h4><p class="cap">Type a Min and Max enrollment<span class="adv">, or drag the sliders,</span> to include only districts between the two values. Leave a box blank for no limit.</p>
             <div id="sliders" style="display:flex;flex-direction:column;gap:12px"></div>
           </div>
@@ -744,7 +744,7 @@ function setPro(on){PRO=on;document.body.classList.toggle('pro',on);const c=$('#
   if(!on){// clear anything only the advanced view can set, so no hidden filter stays on
     if(TF==='g:')TF='';
     SL.forEach(([id])=>{if(id==='enroll')return;const r=rng[id];$('#'+id+'-min').value=r.lo;$('#'+id+'-max').value=r.hi;r.a=r.lo;r.b=r.hi});DD.forEach(([id])=>$('#'+id).value='');
-    [[COMP,'f-comp'],[MIX,'f-mix'],[LEAD,'f-lead'],[CMP,'f-cmp'],[MSF[2][2],'f-tea']].forEach(([st,id])=>{st.clear();document.querySelectorAll('#'+id+'-l input').forEach(c=>c.checked=false);$('#'+id+'-s').textContent='All'});
+    [[COMP,'f-comp'],[MIX,'f-mix'],[LEAD,'f-lead'],[MSF[2][2],'f-tea']].forEach(([st,id])=>{st.clear();document.querySelectorAll('#'+id+'-l input').forEach(c=>c.checked=false);$('#'+id+'-s').textContent='All'});
     SLICE='';$('#rate').value='';if(VIEW==='dq'){goTab('District Overview');return}}
   render()}
 $('#pro').addEventListener('change',e=>{setPro(e.target.checked);proSeen()});
@@ -778,7 +778,7 @@ const HELP=[
  {g:'Pages',id:'h-dq',t:'Data checks (Advanced)',b:`
   <p>Entries that look like typos. They're left out of medians and ratings.</p>`},
  {g:'Filters',id:'h-cmp',t:'Comparison Filters',b:`
-  <p>Narrow the districts you're compared with by region, size and more. ${hui('Choose Your Own Comparison Districts')} (Advanced) compares only the districts you pick.</p>
+  <p>Narrow the districts you're compared with by region, size and more. ${hui('Choose Your Own Comparison Districts')} compares only the districts you pick.</p>
   <p>${hui('Reset selections')} and ${hui('Clear all filters')} clear everything, including ${hui('Your District')}.</p>`},
  {g:'How the numbers work',id:'h-rules',t:'Definitions',b:`
   ${htbl(['Term','Meaning'],[
