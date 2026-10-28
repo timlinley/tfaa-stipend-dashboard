@@ -763,11 +763,21 @@ const htbl=(h,rows)=>`<div class="tbl"><table class="mapt htbl"><thead><tr>${h.m
 const HELP_TFAA='kimblann@tfaa.org';
 const HELP=[
  {g:'Getting started',id:'h-what',t:'What this shows',b:`
-  <p>TFAA Stipend Survey results: stipends and extra contract days for Fine Arts positions in member districts. One response per district (the newest). Names and emails are never shown.</p>`},
+  <p>TFAA Stipend Survey results: stipends and extra contract days for Fine Arts positions in TFAA member districts. The Dashboard displays one response per district, per school year. If a district has changes to its stipend amounts during the school year, the most up to date amount is shown.</p>`},
  {g:'Getting started',id:'h-dist',t:'Pick your district',b:`
-  <p>Choose it in ${hui('Your District')} at the top of the filter panel. Every page then compares it with the other districts.</p>`},
+  <p>Select ${hui('Your District')} at the top of the filter panel. Every page across the Dashboard then compares your district against the comparison districts your filters determine.</p>`},
+ {g:'Getting started',id:'h-cmp',t:'Set your Comparison Filters',b:`
+  <p>Once you have selected your district, you are initially presented with comparisons against the entire TFAA membership. You can narrow the districts you're compared with by region, size and more. Additionally, you can ${hui('Choose Your Own Comparison Districts')} by selecting them from the dropdown menu.</p>
+  <p>${hui('Reset selections')} and ${hui('Clear all filters')} clear everything, including ${hui('Your District')}.</p>`},
  {g:'Getting started',id:'h-adv',t:'Advanced Metrics',b:`
-  <p>Turn on ${hui('Show Advanced Metrics')} for more filters, charts and the ${hui('Data checks')} tab. Turning it off clears the Advanced filters.</p>`},
+  <p>Turn on ${hui('Show Advanced Metrics')} for more filters, charts, the ${hui('Daily rate for extra days')} field, and the ${hui('Data checks')} tab. Turning it off clears the Advanced filters.</p>
+  <p>${hui('Daily rate for extra days')}<br>Type a daily pay rate to turn extra contract days into dollars. On content area pages, the ${hui('Total Package Estimate')} then shows your stipend plus your extra days times that rate. It also shows the median package of your comparison districts and your gap from it. The same rate is used for every district, so the comparison stays even. A starting point: a teacher’s annual salary divided by 187. Leave it blank to skip the estimate. The rate is never saved or shared.</p>
+  <p>${hui('Data checks')}<br>This tab lists survey entries that look like typos or odd answers. They’re shown here and left out of medians and ratings, so one mistyped number can’t skew a comparison. An entry is flagged when:</p>
+  <ul><li>A stipend is under 25% or over 3 times the statewide median for that position (needs 5 or more districts paying it).</li>
+  <li>A supplemental stipend is $0 or blank, or under 25% or over 3 times the median for that title.</li>
+  <li>Extra days are over 60. If the entry looks like a total contract length, only the days above 187 are counted, and the row says so.</li>
+  <li>A district reports more than 10 central Fine Arts staff.</li></ul>
+  <p>Each row shows the district, the item, what was entered and why it was flagged. Pick your district in ${hui('Your District')} to review your own entries. If one of yours needs correcting, let us know through <a href="#" class="fb-link">Send feedback</a>.</p>`},
  {g:'Pages',id:'h-over',t:'District Overview',b:`
   <ul><li>${hui('How Your Compensation Compares')}: your positions by rating. Select a rating to list them.</li>
   <li>${hui('Position-by-Position Comparison')}: every position. Select a tile above the table to filter it; select it again to clear.</li></ul>`},
@@ -775,11 +785,6 @@ const HELP=[
   <p>Pick a ${hui('Level')} and ${hui('Position')}. Select a column heading in ${hui('Matching Districts')} to sort.</p>`},
  {g:'Pages',id:'h-supp',t:'Supplemental Stipends',b:`
   <p>Sponsor, club and other stipends. ${hui('Only what [your district] offers')} limits the list to stipends your district pays. Stipends with no level in the title show under All levels.</p>`},
- {g:'Pages',id:'h-dq',t:'Data checks (Advanced)',b:`
-  <p>Entries that look like typos. They're left out of medians and ratings.</p>`},
- {g:'Filters',id:'h-cmp',t:'Comparison Filters',b:`
-  <p>Narrow the districts you're compared with by region, size and more. ${hui('Choose Your Own Comparison Districts')} compares only the districts you pick.</p>
-  <p>${hui('Reset selections')} and ${hui('Clear all filters')} clear everything, including ${hui('Your District')}.</p>`},
  {g:'How the numbers work',id:'h-rules',t:'Definitions',b:`
   ${htbl(['Term','Meaning'],[
    ['Median','The middle district: half pay more, half less.'],
@@ -790,9 +795,9 @@ const HELP=[
    ['Administrative or Extended Contract','Paid by contract instead of a stipend. Not rated.'],
    ['Blank or $0','Not offered. Left out of medians.']])}`},
  {g:'How the numbers work',id:'h-pkg',t:'Total Package Estimate (Advanced)',b:`
-  <p>Stipend plus extra days at the daily rate you enter in ${hui('Daily rate for extra days (optional)')}.</p>`},
+  <p>Type a daily pay rate in ${hui('Daily rate for extra days (optional)')} to turn extra contract days into dollars. On content area pages, the ${hui('Total Package Estimate')} then shows your stipend plus your extra days times that rate, the median package of your comparison districts, and your gap from it. The same rate is used for every district, so the comparison stays even. A starting point: a teacher's annual salary divided by 187. Leave it blank to skip the estimate. The rate is never saved or shared. See <a href="#h-adv" class="hlk">Advanced Metrics</a> at the top of this guide to turn it on.</p>`},
  {g:'Getting help',id:'h-help',t:'Getting help',b:`
-  <p>Select ${hui('Send feedback')} at the bottom of any page, or email TFAA at <a href="mailto:${HELP_TFAA}">${HELP_TFAA}</a>.</p>`}];
+  <p>Select <a href="#" class="fb-link">Send feedback</a> at the bottom of any page, or email TFAA at <a href="mailto:${HELP_TFAA}">${HELP_TFAA}</a>.</p>`}];
 const hMark=(html,q)=>{if(!q)return html;const re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');return html.replace(/>([^<]+)</g,(m,t)=>'>'+t.replace(re,'<mark>$1</mark>')+'<')};
 function helpParts(q){q=(q||'').trim();const ql=q.toLowerCase();
   const list=HELP.filter(s=>!q||(s.t+' '+s.b).replace(/<[^>]+>/g,' ').toLowerCase().includes(ql));
@@ -809,6 +814,7 @@ function showHelp(){const p=helpParts('');
 // in-guide jumps scroll inside the page (no hash change, so an embedded copy doesn't move its host page)
 document.getElementById('help-link').addEventListener('click',e=>{e.preventDefault();document.querySelector('.tabs [data-t="Help"]').click();window.scrollTo({top:document.querySelector('.board').offsetTop,behavior:'smooth'})});
 document.getElementById('help').addEventListener('click',e=>{const a=e.target.closest('a');if(!a)return;
+  if(a.classList.contains('fb-link')){e.preventDefault();if(typeof fbOpen==='function'&&FEEDBACK_URL)fbOpen();return}
   if(a.classList.contains('hlk')){e.preventDefault();const t=document.getElementById(a.getAttribute('href').slice(1));if(t)t.scrollIntoView({behavior:'smooth',block:'start'})}});
 // ---------- Send feedback (Security Light 10/28: text/plain POST, no cookies; answers ok or error only) ----------
 // FEEDBACK_URL is the feedback Apps Script web app (apps-script/feedback). The button stays hidden until it's set.
