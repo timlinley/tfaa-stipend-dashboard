@@ -146,6 +146,7 @@ td.dz,th.dz{white-space:normal}
 .rpt .logo{height:52px}
 .rpt h3{font:700 1.5rem var(--f-display);color:var(--brass);letter-spacing:.01em}
 .rpt .cap{margin-left:auto}
+.help-link{color:var(--brass);font-weight:600;font-size:.92rem;text-decoration:underline;text-underline-offset:3px}
 .mm{font:600 .7rem var(--f-display);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-top:2px}
 body:not(.pro) .adv{display:none!important}
 body:not(.pro) #you-card{grid-column:span 12}
@@ -240,20 +241,63 @@ select{-webkit-appearance:none;appearance:none;padding-right:34px;background-ima
 .probox.cue{animation:procue 1.6s ease-in-out 3}
 @keyframes procue{0%,100%{box-shadow:0 0 0 0 rgba(181,40,46,0)}50%{box-shadow:0 0 0 5px rgba(181,40,46,.35)}}
 @media (prefers-reduced-motion:reduce){.probox.cue{animation:none}}
-.czfoot{display:flex;justify-content:flex-end;padding:12px 18px;border-top:1px solid var(--line);background:var(--bg)}
+.czfoot{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 18px;border-top:1px solid var(--line);background:var(--bg)}
 .cz{display:inline-flex;align-items:center;gap:10px;white-space:nowrap}
 .czd{width:38px;height:38px;flex:none}
 .czt{display:flex;flex-direction:column;line-height:1.05}
 .czt small{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .czt b{font:700 1.05rem var(--f-display);letter-spacing:.06em;text-transform:uppercase;color:var(--ink)}
+/* Send feedback dialog */
+.fb-open{align-self:center}
+.fb{border:1px solid var(--line);border-radius:10px;padding:0;width:min(520px,calc(100vw - 32px));background:var(--surface);color:var(--ink)}
+.fb::backdrop{background:rgba(10,18,32,.45)}
+.fb form{display:flex;flex-direction:column;gap:12px;padding:18px}
+.fb h2{font:700 1.3rem var(--f-display);color:var(--brass)}
+.fb label{font-size:.85rem;font-weight:600}
+.fb select,.fb textarea,.fb input{box-sizing:border-box;font:inherit;width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink)}
+.fb textarea{min-height:120px;resize:vertical}
+.fb .fld{display:flex;flex-direction:column;gap:4px}
+.fb .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.fb .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.fb .go-btn{background:var(--brass);color:var(--surface);border-color:var(--brass)}
+.fb .msg{font-size:.9rem}
+.fb .msg.bad{color:var(--warn)}
+/* Help tab */
+.help{padding:18px 0 8px}
+.hhero>div:first-child{flex:1 1 320px;text-align:left}
+.hhero{display:flex;flex-direction:row;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:flex-end;border-bottom:1px solid var(--line);padding:0 18px 16px}
+.hhero h2{font:700 1.5rem var(--f-display);color:var(--brass)}
+.hhero p{color:var(--muted);margin-top:4px}
+.hsrch{display:flex;flex-direction:column;gap:4px;min-width:min(100%,280px)}
+.hsrch label,.hside .lab{font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.hsrch input{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink)}
+.hgrid{display:grid;grid-template-columns:240px minmax(0,1fr);gap:24px;padding:16px 18px}
+@media (max-width:760px){.hgrid{grid-template-columns:1fr}.hside{position:static!important}}
+.hside{position:sticky;top:120px;align-self:start}
+.htoc{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:2px}
+.htoc a{color:var(--brass);text-decoration:none;font-size:.92rem;display:block;padding:3px 8px}
+.htoc a:hover{text-decoration:underline}
+.htoc .grp,.hgroup-h{background:var(--brass-soft);border-left:4px solid var(--accent);color:var(--ink);font:700 .82rem var(--f-display);letter-spacing:.05em;text-transform:uppercase;padding:5px 8px;margin-top:10px;border-radius:0 4px 4px 0}
+.hgroup-h{font-size:.95rem;margin:0 0 4px}
+.hgroup{display:flex;flex-direction:column;gap:14px;margin-bottom:26px}
+.hsec{scroll-margin-top:130px;gap:0}
+.hsec h3{font:700 1.15rem var(--f-display);margin-bottom:6px}
+.hsec p,.hsec li{max-width:72ch}
+.hsec p+p,.hsec p+ul,.hsec ul+p{margin-top:8px}
+.hsec ul{padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.hsec a{color:var(--brass)}
+.hui{color:var(--ink);background:var(--brass-soft);padding:0 4px;border-radius:3px;font-weight:600}
+.hempty{color:var(--muted);padding:12px 0}
+.help mark{background:#ffe58a;color:#14213d;padding:0 1px}
 </style></head><body>
 <div class="wrap prod">
 <h2 id="mock-h" hidden></h2><button id="lbl" hidden></button>
 <div class="board nolabels locked">
-    <div class="stk" id="stk"><div class="tabs" role="tablist" aria-label="Content areas"><button type="button" role="tab" data-t="District Overview" class="on" aria-selected="true">District Overview</button><button type="button" role="tab" data-t="Art">Art</button><button type="button" role="tab" data-t="Band">Band</button><button type="button" role="tab" data-t="Cheer">Cheer</button><button type="button" role="tab" data-t="Choir">Choir</button><button type="button" role="tab" data-t="Colorguard">Colorguard</button><button type="button" role="tab" data-t="Dance">Dance</button><button type="button" role="tab" data-t="Elementary Music">Elementary Music</button><button type="button" role="tab" data-t="Mariachi">Mariachi</button><button type="button" role="tab" data-t="Modern Band">Modern Band</button><button type="button" role="tab" data-t="Music Theory">Music Theory</button><button type="button" role="tab" data-t="Orchestra">Orchestra</button><button type="button" role="tab" data-t="Theatre">Theatre</button><button type="button" role="tab" data-t="Technical Theatre">Technical Theatre</button><button type="button" role="tab" data-t="Supplemental Stipends">Supplemental Stipends</button><button type="button" role="tab" data-t="Data checks" class="adv">Data checks</button></div>
-    <div class="rpt"><div class="stripe"></div><div class="in"><img class="logo" alt="Texas Fine Arts Administrators" width="162" height="64" src="tfaa-logo.png"><h3 id="rpt-t">Stipend Survey Results</h3><span class="cap"><span class="tag">Image and rectangle components in the page header, repeated on every page · </span><span id="resp-w" hidden><span id="resp-n"></span> responding districts</span></span></div></div></div>
+    <div class="stk" id="stk"><div class="tabs" role="tablist" aria-label="Content areas"><button type="button" role="tab" data-t="District Overview" class="on" aria-selected="true">District Overview</button><button type="button" role="tab" data-t="Art">Art</button><button type="button" role="tab" data-t="Band">Band</button><button type="button" role="tab" data-t="Cheer">Cheer</button><button type="button" role="tab" data-t="Choir">Choir</button><button type="button" role="tab" data-t="Colorguard">Colorguard</button><button type="button" role="tab" data-t="Dance">Dance</button><button type="button" role="tab" data-t="Elementary Music">Elementary Music</button><button type="button" role="tab" data-t="Mariachi">Mariachi</button><button type="button" role="tab" data-t="Modern Band">Modern Band</button><button type="button" role="tab" data-t="Music Theory">Music Theory</button><button type="button" role="tab" data-t="Orchestra">Orchestra</button><button type="button" role="tab" data-t="Theatre">Theatre</button><button type="button" role="tab" data-t="Technical Theatre">Technical Theatre</button><button type="button" role="tab" data-t="Supplemental Stipends">Supplemental Stipends</button><button type="button" role="tab" data-t="Data checks" class="adv">Data checks</button><button type="button" role="tab" data-t="Help" class="help-tab">Help</button></div>
+    <div class="rpt"><div class="stripe"></div><div class="in"><img class="logo" alt="Texas Fine Arts Administrators" width="162" height="64" src="tfaa-logo.png"><h3 id="rpt-t">Stipend Survey Results</h3><a href="#" id="help-link" class="help-link" hidden>New here? See how to use this dashboard</a><span class="cap"><span class="tag">Image and rectangle components in the page header, repeated on every page · </span><span id="resp-w" hidden><span id="resp-n"></span> responding districts</span></span></div></div></div>
     <div class="board-body"><div class="loading" id="loading"><div id="busy"><h2>Loading the Stipend Survey Results…</h2><p id="loading-msg"></p></div></div>
       <div class="backbar" id="backbar" style="margin:14px 0 0" hidden></div>
+      <div class="help" id="help" hidden></div>
       <div class="layout" id="app" hidden>
 
         <aside class="side" aria-label="Filters">
@@ -325,7 +369,17 @@ select{-webkit-appearance:none;appearance:none;padding-right:34px;background-ima
         </div>
       </div>
     </div>
-    <div class="czfoot"><span class="cz"><img class="czd" alt="" width="38" height="38" src="cadenza-diamond.png"><span class="czt"><small>Powered by</small><b>Cadenza</b></span></span></div>
+    <dialog class="fb" id="fb" aria-labelledby="fb-h"><form id="fb-form" novalidate>
+  <h2 id="fb-h">Send Feedback</h2>
+  <p class="cap" style="margin:0">Goes to TFAA and Cadenza. Your page and filters are included.</p>
+  <div class="fld"><label for="fb-kind">What kind of feedback?</label><select id="fb-kind" required><option value="">Choose one</option><option value="wrong_number">A number looks wrong</option><option value="missing">Something is missing</option><option value="page">A button or page didn't work</option><option value="confusing">Something is confusing</option><option value="idea">An idea or request</option><option value="other">Something else</option></select></div>
+  <div class="fld"><label for="fb-note">Your note</label><span class="cap" style="margin:0">Please don't include student names or other student information.</span><textarea id="fb-note" maxlength="1000" required></textarea></div>
+  <div class="fld"><label for="fb-email">Your email (optional, if you'd like a reply)</label><input id="fb-email" type="email" maxlength="120" autocomplete="email"></div>
+  <div class="hp" aria-hidden="true"><label for="fb-web">Website</label><input id="fb-web" tabindex="-1" autocomplete="off"></div>
+  <p class="msg" id="fb-msg" role="status"></p>
+  <div class="row"><button type="button" class="clear" id="fb-cancel">Cancel</button><button type="submit" class="clear go-btn" id="fb-send">Send</button></div>
+</form></dialog>
+<div class="czfoot"><button type="button" class="clear fb-open" id="fb-open" hidden>Send feedback</button><span class="cz"><img class="czd" alt="" width="38" height="38" src="cadenza-diamond.png"><span class="czt"><small>Powered by</small><b>Cadenza</b></span></span></div>
   </div>
 </div>
 <script src="transform.js"></script>
@@ -555,7 +609,7 @@ function refreshCmp(){const d=$('#dist').value,me=d===''?null:D0[+d][0];let ch=f
   if(ch)$('#f-cmp-s').textContent=CMP.size>3?CMP.size+' selected':CMP.size?[...CMP].join('; '):'All'}
 function syncSliders(){SL.forEach(([id])=>{if(id==='enroll')return;const r=rng[id],d=$('#'+id+'-min').closest('.dual'),sp=r.hi-r.lo||1,p=v=>(100*(v-r.lo)/sp).toFixed(2);$('#'+id+'-a').textContent=r.f(r.a);$('#'+id+'-b').textContent=r.f(r.b);
     d.style.setProperty('--lo',p(r.a)+'%');d.style.setProperty('--hi',p(r.b)+'%');d.classList.toggle('minTop',r.a-r.lo>sp/2)})}
-function render(){
+function render(){if(VIEW==='help')return;
   refreshDist();refreshCmp();
   const need=[];if($('#dist').value==='')need.push('Your District');if(VIEW==='area'){if(!LV)need.push('Level');if(!RK)need.push('Position')}
   const gate=$('#gate');gate.hidden=!need.length;$('#canvas').hidden=!!need.length;
@@ -648,7 +702,9 @@ function render(){
   $('#all tbody').innerHTML=srt.map(r=>`<tr><td>${r[0]}</td><td class="r">${num(r[1])}</td>${POS.map(p=>`<td class="r">${p[0]===PK&&r[p[0]]==null&&isSal(r)?salTag(r):cell(p[0],r[p[0]])}</td>`).join('')}</tr>`).join('');
 }
 document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>goTab(b.dataset.t)));
-function goTab(t){LV='';RK='';DRILL=null;TF='';RET=null;VIEW=t==='District Overview'?'over':t==='Supplemental Stipends'?'oth':t==='Data checks'?'dq':'area';if(VIEW==='area')setArea(t);else fillSel();
+function goTab(t){const help=t==='Help';$('#help-link').hidden=t!=='District Overview';$('#help').hidden=!help;$('#app').hidden=help;if(help){$('#backbar').hidden=true;VIEW='help';
+    document.querySelectorAll('.tabs button').forEach(x=>{const on=x.dataset.t===t;x.classList.toggle('on',on);x.setAttribute('aria-selected',on)});$('#rpt-t').textContent='Help';showHelp();return}
+  LV='';RK='';DRILL=null;TF='';RET=null;VIEW=t==='District Overview'?'over':t==='Supplemental Stipends'?'oth':t==='Data checks'?'dq':'area';if(VIEW==='area')setArea(t);else fillSel();
   document.querySelectorAll('.tabs button').forEach(x=>{const on=x.dataset.t===t;x.classList.toggle('on',on);x.setAttribute('aria-selected',on)});$('#mock-h').textContent=t+' page with filters';$('#rpt-t').textContent=VIEW==='area'?t+' Stipends':t;render()}
 ['#cheer-note','#dance-note','#gate'].forEach(s=>$(s).addEventListener('click',e=>{const a=e.target.closest('.go');if(a){e.preventDefault();goTab(a.dataset.a)}}));
 $('#alt').addEventListener('click',e=>{const a=e.target.closest('.go');if(a){e.preventDefault();goTab(a.dataset.a)}});
@@ -700,6 +756,87 @@ document.body.classList.toggle('pro',PRO);$('#pro').checked=PRO;$('#pro').setAtt
 $('#resp-n').textContent=D.length;$('#resp-w').hidden=false;
 goTab('District Overview');
 }
+// ---------- Help tab (Tim 10/27, modeled on the Richardson Help tab: one guide, search, grouped side list) ----------
+// Name on-screen labels exactly as they appear. When a label or page changes, update its topic here in the same PR.
+const hui=s=>`<b class="hui">${s}</b>`;
+const htbl=(h,rows)=>`<div class="tbl"><table class="mapt htbl"><thead><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(x=>`<td>${x}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+const HELP_TFAA='kimblann@tfaa.org';
+const HELP=[
+ {g:'Getting started',id:'h-what',t:'What this shows',b:`
+  <p>TFAA Stipend Survey results: stipends and extra contract days for Fine Arts positions in member districts. One response per district (the newest). Names and emails are never shown.</p>`},
+ {g:'Getting started',id:'h-dist',t:'Pick your district',b:`
+  <p>Choose it in ${hui('Your District')} at the top of the filter panel. Every page then compares it with the other districts.</p>`},
+ {g:'Getting started',id:'h-adv',t:'Advanced Metrics',b:`
+  <p>Turn on ${hui('Show Advanced Metrics')} for more filters, charts and the ${hui('Data checks')} tab. Turning it off clears the Advanced filters.</p>`},
+ {g:'Pages',id:'h-over',t:'District Overview',b:`
+  <ul><li>${hui('How Your Compensation Compares')}: your positions by rating. Select a rating to list them.</li>
+  <li>${hui('Position-by-Position Comparison')}: every position. Select a tile above the table to filter it; select it again to clear.</li></ul>`},
+ {g:'Pages',id:'h-area',t:'Content area pages',b:`
+  <p>Pick a ${hui('Level')} and ${hui('Position')}. Select a column heading in ${hui('Matching Districts')} to sort.</p>`},
+ {g:'Pages',id:'h-supp',t:'Supplemental Stipends',b:`
+  <p>Sponsor, club and other stipends. ${hui('Only what [your district] offers')} limits the list to stipends your district pays. Stipends with no level in the title show under All levels.</p>`},
+ {g:'Pages',id:'h-dq',t:'Data checks (Advanced)',b:`
+  <p>Entries that look like typos. They're left out of medians and ratings.</p>`},
+ {g:'Filters',id:'h-cmp',t:'Comparison Filters',b:`
+  <p>Narrow the districts you're compared with by region, size and more. ${hui('Choose Your Own Comparison Districts')} (Advanced) compares only the districts you pick.</p>
+  <p>${hui('Reset selections')} and ${hui('Clear all filters')} clear everything, including ${hui('Your District')}.</p>`},
+ {g:'How the numbers work',id:'h-rules',t:'Definitions',b:`
+  ${htbl(['Term','Meaning'],[
+   ['Median','The middle district: half pay more, half less.'],
+   ['Market range','25th to 75th percentile of districts that pay the position.'],
+   ['Below / Within / Above market','Under, inside or over the market range.'],
+   ['Small sample','Fewer than 5 comparison districts. No rating.'],
+   ['Extra days','Rated separately from stipends. Entries over 60 count only the days above 187.'],
+   ['Administrative or Extended Contract','Paid by contract instead of a stipend. Not rated.'],
+   ['Blank or $0','Not offered. Left out of medians.']])}`},
+ {g:'How the numbers work',id:'h-pkg',t:'Total Package Estimate (Advanced)',b:`
+  <p>Stipend plus extra days at the daily rate you enter in ${hui('Daily rate for extra days (optional)')}.</p>`},
+ {g:'Getting help',id:'h-help',t:'Getting help',b:`
+  <p>Select ${hui('Send feedback')} at the bottom of any page, or email TFAA at <a href="mailto:${HELP_TFAA}">${HELP_TFAA}</a>.</p>`}];
+const hMark=(html,q)=>{if(!q)return html;const re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');return html.replace(/>([^<]+)</g,(m,t)=>'>'+t.replace(re,'<mark>$1</mark>')+'<')};
+function helpParts(q){q=(q||'').trim();const ql=q.toLowerCase();
+  const list=HELP.filter(s=>!q||(s.t+' '+s.b).replace(/<[^>]+>/g,' ').toLowerCase().includes(ql));
+  let last='';const toc=list.map(s=>{const h=s.g!==last?`<li class="grp">${s.g}</li>`:'';last=s.g;return h+`<li><a href="#${s.id}" class="hlk">${s.t}</a></li>`}).join('');
+  const groups=list.reduce((a,s)=>{const l=a[a.length-1];if(l&&l[0]===s.g)l[1].push(s);else a.push([s.g,[s]]);return a},[]);
+  const main=list.length?groups.map(([g,ss])=>`<div class="hgroup"><h2 class="hgroup-h">${g}</h2>${ss.map(s=>`<section class="hsec" id="${s.id}"><h3>${hMark(s.t,q)}</h3>${hMark(s.b,q)}</section>`).join('')}</div>`).join('')
+    :`<div class="hempty">Nothing in this guide matches “${q.replace(/[<>&"]/g,'')}”.</div>`;
+  return {toc,main}}
+function showHelp(){const p=helpParts('');
+  document.querySelector('#help').innerHTML=`<section class="hhero"><div><h2>How to Use the Stipend Dashboard</h2><p>What the pages show, how the comparisons work, and where to get help.</p></div>
+    <div class="hsrch"><label for="hq">Search this guide</label><input id="hq" type="search" placeholder="Try “median” or “extra days”" autocomplete="off"></div></section>
+    <div class="hgrid"><aside class="hside" aria-label="Guide contents"><div class="lab">In this guide</div><ul class="htoc" id="htoc">${p.toc}</ul></aside><div class="hmain" id="hmain">${p.main}</div></div>`;
+  document.querySelector('#hq').addEventListener('input',e=>{const p=helpParts(e.target.value);document.querySelector('#htoc').innerHTML=p.toc;document.querySelector('#hmain').innerHTML=p.main})}
+// in-guide jumps scroll inside the page (no hash change, so an embedded copy doesn't move its host page)
+document.getElementById('help-link').addEventListener('click',e=>{e.preventDefault();document.querySelector('.tabs [data-t="Help"]').click();window.scrollTo({top:document.querySelector('.board').offsetTop,behavior:'smooth'})});
+document.getElementById('help').addEventListener('click',e=>{const a=e.target.closest('a');if(!a)return;
+  if(a.classList.contains('hlk')){e.preventDefault();const t=document.getElementById(a.getAttribute('href').slice(1));if(t)t.scrollIntoView({behavior:'smooth',block:'start'})}});
+// ---------- Send feedback (Security Light 10/28: text/plain POST, no cookies; answers ok or error only) ----------
+// FEEDBACK_URL is the feedback Apps Script web app (apps-script/feedback). The button stays hidden until it's set.
+const FEEDBACK_URL='https://script.google.com/macros/s/AKfycbyNfErlbkMmVYVkEOq1P0SXu31ZQn5IDJNX4-rnLUk0aTHqrn2rKp1AHwj_K4c6JEGh/exec';
+const FB_VERSION='2026-10-28';
+const fbT0=Date.now(),fbEl=id=>document.getElementById(id);
+if(FEEDBACK_URL)fbEl('fb-open').hidden=false;
+function fbOpen(){const f=fbEl('fb-form');f.reset();fbEl('fb-msg').textContent='';fbEl('fb-msg').className='msg';fbEl('fb-send').disabled=false;fbEl('fb').showModal();fbEl('fb-kind').focus()}
+fbEl('fb-open').addEventListener('click',fbOpen);
+fbEl('fb-cancel').addEventListener('click',()=>fbEl('fb').close());
+// tap outside the box closes it (Tim's rule for every popup)
+fbEl('fb').addEventListener('click',e=>{if(e.target===fbEl('fb'))fbEl('fb').close()});
+fbEl('fb-form').addEventListener('submit',async e=>{e.preventDefault();const m=fbEl('fb-msg'),say=(t,bad)=>{m.textContent=t;m.className='msg'+(bad?' bad':'')};
+  const kind=fbEl('fb-kind').value,note=fbEl('fb-note').value.trim(),email=fbEl('fb-email').value.trim();
+  if(!kind)return say('Choose what kind of feedback this is.',true);
+  if(!note)return say('Add a short note.',true);
+  if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return say('Check the email address, or leave it blank.',true);
+  const sel=id=>{const x=document.getElementById(id);return x&&x.selectedIndex>0?x.options[x.selectedIndex].text:''};
+  const body={kind,note,email,website:fbEl('fb-web').value,seconds:Math.round((Date.now()-fbT0)/1000),
+    tab:(document.querySelector('.tabs button.on')||{}).textContent||'',
+    filters:[sel('f-level'),sel('f-pos')].filter(Boolean).join(' / '),
+    district:sel('dist').replace(/ \(none reported\)$/,''),version:FB_VERSION};
+  fbEl('fb-send').disabled=true;say('Sending…');
+  try{const r=await fetch(FEEDBACK_URL,{method:'POST',body:JSON.stringify(body),credentials:'omit'});const a=await r.json();
+    if(a.ok){say('Thanks! Your feedback was sent.');setTimeout(()=>fbEl('fb').close(),1800);return}
+    say(a.error==='busy'?'Lots of feedback is coming in right now. Please try again later.':a.error==='too_fast'?'Please wait a few seconds and send again.':'That didn\'t send. Please try again.',true)}
+  catch(err){say('That didn\'t send. Check your connection and try again.',true)}
+  fbEl('fb-send').disabled=false});
 function showMsg(t){document.getElementById('loading-msg').textContent=t}
 // Tell a hosting page (embed.js) how tall the dashboard is, so its window can fit without inner scrolling.
 if(window.parent!==window){const s=document.getElementById('stk'),bd=document.querySelector('.board');s.classList.add('emb');
