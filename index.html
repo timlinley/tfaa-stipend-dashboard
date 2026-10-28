@@ -286,7 +286,8 @@ select{-webkit-appearance:none;appearance:none;padding-right:34px;background-ima
 .hsec p+p,.hsec p+ul,.hsec ul+p{margin-top:8px}
 .hsec ul{padding-left:20px;display:flex;flex-direction:column;gap:4px}
 .hsec a{color:var(--brass)}
-.hui{color:var(--ink);background:var(--brass-soft);padding:0 4px;border-radius:3px;font-weight:600}
+.hui{color:var(--ink);background:var(--brass-soft);padding:0 4px;border-radius:3px;font-weight:600;white-space:nowrap}
+@media (max-width:480px){.hui{white-space:normal;-webkit-box-decoration-break:clone;box-decoration-break:clone}}
 .hempty{color:var(--muted);padding:12px 0}
 .help mark{background:#ffe58a;color:#14213d;padding:0 1px}
 </style></head><body>
