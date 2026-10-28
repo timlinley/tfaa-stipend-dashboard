@@ -768,8 +768,6 @@ const HELP=[
   <p>Choose it in ${hui('Your District')} at the top of the filter panel. Every page then compares it with the other districts.</p>`},
  {g:'Getting started',id:'h-adv',t:'Advanced Metrics',b:`
   <p>Turn on ${hui('Show Advanced Metrics')} for more filters, charts and the ${hui('Data checks')} tab. Turning it off clears the Advanced filters.</p>`},
- {g:'Getting started',id:'h-update',t:"Updating your district's answers",b:`
-  <p>Submit the survey form again. Your newest answers replace the old ones within a few minutes.</p>`},
  {g:'Pages',id:'h-over',t:'District Overview',b:`
   <ul><li>${hui('How Your Compensation Compares')}: your positions by rating. Select a rating to list them.</li>
   <li>${hui('Position-by-Position Comparison')}: every position. Select a tile above the table to filter it; select it again to clear.</li></ul>`},
@@ -814,7 +812,7 @@ document.getElementById('help').addEventListener('click',e=>{const a=e.target.cl
   if(a.classList.contains('hlk')){e.preventDefault();const t=document.getElementById(a.getAttribute('href').slice(1));if(t)t.scrollIntoView({behavior:'smooth',block:'start'})}});
 // ---------- Send feedback (Security Light 10/28: text/plain POST, no cookies; answers ok or error only) ----------
 // FEEDBACK_URL is the feedback Apps Script web app (apps-script/feedback). The button stays hidden until it's set.
-const FEEDBACK_URL='';
+const FEEDBACK_URL='https://script.google.com/macros/s/AKfycbyNfErlbkMmVYVkEOq1P0SXu31ZQn5IDJNX4-rnLUk0aTHqrn2rKp1AHwj_K4c6JEGh/exec';
 const FB_VERSION='2026-10-28';
 const fbT0=Date.now(),fbEl=id=>document.getElementById(id);
 if(FEEDBACK_URL)fbEl('fb-open').hidden=false;
