@@ -1,0 +1,62 @@
+# Quality checks (Quality Control thread, 11/10/2026).
+# Runs on every pull request and every push to main, plus a weekly re-scan
+# on Monday morning so newly announced library security holes still show up.
+# Read-only: it uses no secrets and cannot deploy or change anything.
+name: Quality checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 13 * * 1"   # Mondays 7 AM Central (8 AM during daylight time)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  script-syntax:
+    name: Script syntax
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
+        with:
+          persist-credentials: false
+      - name: Check every script parses
+        run: |
+          set -e
+          for f in *.js; do node --check "$f"; done
+          node --check - < apps-script/Code.gs
+          node --check - < apps-script/feedback/Feedback.gs
+
+  leaked-keys:
+    name: Leaked passwords and keys
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install gitleaks 8.29.1 (checksum verified)
+        run: |
+          curl -sSL -o gl.tgz https://github.com/gitleaks/gitleaks/releases/download/v8.29.1/gitleaks_8.29.1_linux_x64.tar.gz
+          echo "e4eb209d04e20339d77122a3bdf9cd41351255cfb27ebcb75e85325e04f88924  gl.tgz" | sha256sum -c -
+          tar xzf gl.tgz gitleaks
+      - name: Scan the new commits
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          # Pull requests: only the PR's commits. Pushes: only the pushed commits.
+          # Weekly run: the current files (no history), so old fixed items don't block.
+          if [ -n "$BASE" ] && [ "$BASE" != "0000000000000000000000000000000000000000" ]; then
+            ./gitleaks git . --no-banner --redact --log-opts="$BASE..HEAD"
+          else
+            ./gitleaks dir . --no-banner --redact
+          fi
