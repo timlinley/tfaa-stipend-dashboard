@@ -1,11 +1,11 @@
 # Leaked passwords and keys (Quality Control thread, 11/10/2026; own file since 11/14).
-# Every pull request (not drafts), every merge to main, and Monday mornings. About 30 seconds.
+# Every pull request (drafts too, per Security Light 11/14), every merge to main, and Monday mornings. About 30 seconds.
 # Read-only: it uses no secrets and cannot deploy or change anything.
 name: Leaked keys
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]   # drafts wait until marked ready
+    types: [opened, synchronize, reopened, ready_for_review]
   push:
     branches: [main]
   schedule:
@@ -22,7 +22,6 @@ concurrency:
 jobs:
   leaked-keys:
     name: Leaked passwords and keys
-    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
