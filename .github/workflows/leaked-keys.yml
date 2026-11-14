@@ -1,0 +1,48 @@
+# Leaked passwords and keys (Quality Control thread, 11/10/2026; own file since 11/14).
+# Every pull request (not drafts), every merge to main, and Monday mornings. About 30 seconds.
+# Read-only: it uses no secrets and cannot deploy or change anything.
+name: Leaked keys
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]   # drafts wait until marked ready
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 13 * * 1"   # Mondays 7 AM Central (8 AM during daylight time)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: leaked-keys-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  leaked-keys:
+    name: Leaked passwords and keys
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install gitleaks 8.29.1 (checksum verified)
+        run: |
+          curl -sSL -o gl.tgz https://github.com/gitleaks/gitleaks/releases/download/v8.29.1/gitleaks_8.29.1_linux_x64.tar.gz
+          echo "e4eb209d04e20339d77122a3bdf9cd41351255cfb27ebcb75e85325e04f88924  gl.tgz" | sha256sum -c -
+          tar xzf gl.tgz gitleaks
+      - name: Scan the new commits
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          # Pull requests: only the PR's commits. Pushes: only the pushed commits.
+          # Weekly run: the current files (no history), so old fixed items don't block.
+          if [ -n "$BASE" ] && [ "$BASE" != "0000000000000000000000000000000000000000" ]; then
+            ./gitleaks git . --no-banner --redact --log-opts="$BASE..HEAD"
+          else
+            ./gitleaks dir . --no-banner --redact
+          fi
