@@ -1,0 +1,58 @@
+# Code security scan, also called SAST (Quality Control thread, Tim 11/14/2026).
+# Reads this app's own code, without running it, for risky patterns (text pasted into a query, page text that
+# isn't escaped, turned-off certificate checks, weak hashing...). Two free tools, both run here inside GitHub:
+#   Semgrep (community edition) with Semgrep's published security rules, pinned to one commit
+#   (Bandit is for Python; this app has none)
+# Pull requests that change more than notes (not drafts), plus every Monday morning.
+# STEP 1 (now): report only. Findings show in the log and the run summary; the check stays green.
+# STEP 3 (after the real findings are fixed): high-severity findings turn the check red.
+# Read-only: no secrets, no write permission, nothing uploaded, no code leaves GitHub (metrics off).
+name: Code security scan
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]   # drafts wait until marked ready
+    paths-ignore: ["**.md", "docs/**"]
+  schedule:
+    - cron: "0 13 * * 1"   # Mondays 7 AM Central (8 AM during daylight time)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: code-scan-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  semgrep:
+    name: Code security scan (Semgrep)
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
+        with:
+          persist-credentials: false
+      - name: Semgrep's published rules, pinned
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
+        with:
+          repository: semgrep/semgrep-rules
+          ref: 16b9e6d45f10649f6a531ec4838ed9924372c3bc
+          path: .semgrep-rules
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065  # v5.6.0
+        with:
+          python-version: "3.12"
+      - run: pip install --quiet --no-cache-dir semgrep==1.183.0
+      - name: Scan
+        env:
+          SEMGREP_SEND_METRICS: "off"
+          SEMGREP_ENABLE_VERSION_CHECK: "0"
+        run: |
+          semgrep scan --metrics=off --disable-version-check --oss-only \
+            --config .semgrep-rules/python/lang/security --config .semgrep-rules/python/flask/security --config .semgrep-rules/python/requests/security --config .semgrep-rules/python/jwt/security --config .semgrep-rules/python/cryptography/security --config .semgrep-rules/python/pycryptodome/security --config .semgrep-rules/python/jinja2/security --config .semgrep-rules/python/fastapi/security --config .semgrep-rules/javascript/browser/security --config .semgrep-rules/javascript/lang/security --config .semgrep-rules/javascript/jquery/security --config .semgrep-rules/javascript/jsonwebtoken/security --config .semgrep-rules/html/security --config .semgrep-rules/dockerfile/security --config .semgrep-rules/bash/lang/security --config .semgrep-rules/bash/curl/security \
+            --exclude .semgrep-rules --exclude tests --exclude '**/vendor/**' --exclude '*.min.js' \
+            --text --output semgrep.txt . || { echo "Semgrep itself failed"; exit 1; }
+          cat semgrep.txt
+          { echo "### Code security scan (Semgrep)"; echo '```'; tail -c 60000 semgrep.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
