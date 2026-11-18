@@ -9,7 +9,7 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: "0 13 * * 1"   # Mondays 7 AM Central (8 AM during daylight time)
+    - cron: "23 13 * * 1"  # Mondays 7:23 AM Central (8:23 during daylight time); off the hour, GitHub skips on-the-hour runs under load
   workflow_dispatch:
 
 permissions:

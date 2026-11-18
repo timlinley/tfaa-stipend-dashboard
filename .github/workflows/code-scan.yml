@@ -4,8 +4,11 @@
 #   Semgrep (community edition) with Semgrep's published security rules, pinned to one commit
 #   (Bandit is for Python; this app has none)
 # Pull requests that change more than notes (not drafts), plus every Monday morning.
-# STEP 1 (now): report only. Findings show in the log and the run summary; the check stays green.
-# STEP 3 (after the real findings are fixed): high-severity findings turn the check red.
+# Pull requests (Security Light 11/14): only what the pull request ADDS can fail it. Semgrep compares with the
+#   base commit and fails on a new high-severity (ERROR) finding; Bandit reads only the changed Python files and
+#   fails on HIGH severity + HIGH confidence. A new finding that is truly safe gets a one-line
+#   "nosemgrep: <rule> -- <reason>" (or "# nosec <test> -- <reason>") that Security Light reviews in the PR.
+# Mondays and by hand: the full scan, report only, so every existing finding stays visible.
 # Read-only: no secrets, no write permission, nothing uploaded, no code leaves GitHub (metrics off).
 name: Code security scan
 
@@ -14,7 +17,7 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]   # drafts wait until marked ready
     paths-ignore: ["**.md", "docs/**"]
   schedule:
-    - cron: "0 13 * * 1"   # Mondays 7 AM Central (8 AM during daylight time)
+    - cron: "23 13 * * 1"  # Mondays 7:23 AM Central (8:23 during daylight time); off the hour, GitHub skips on-the-hour runs under load
   workflow_dispatch:
 
 permissions:
@@ -33,6 +36,7 @@ jobs:
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
         with:
+          fetch-depth: 0          # the base commit, for the pull request comparison
           persist-credentials: false
       - name: Semgrep's published rules, pinned
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
@@ -49,10 +53,19 @@ jobs:
         env:
           SEMGREP_SEND_METRICS: "off"
           SEMGREP_ENABLE_VERSION_CHECK: "0"
+          BASE: ${{ github.event.pull_request.base.sha }}
         run: |
-          semgrep scan --metrics=off --disable-version-check --oss-only \
-            --config .semgrep-rules/python/lang/security --config .semgrep-rules/python/flask/security --config .semgrep-rules/python/requests/security --config .semgrep-rules/python/jwt/security --config .semgrep-rules/python/cryptography/security --config .semgrep-rules/python/pycryptodome/security --config .semgrep-rules/python/jinja2/security --config .semgrep-rules/python/fastapi/security --config .semgrep-rules/javascript/browser/security --config .semgrep-rules/javascript/lang/security --config .semgrep-rules/javascript/jquery/security --config .semgrep-rules/javascript/jsonwebtoken/security --config .semgrep-rules/html/security --config .semgrep-rules/dockerfile/security --config .semgrep-rules/bash/lang/security --config .semgrep-rules/bash/curl/security \
-            --exclude .semgrep-rules --exclude tests --exclude '**/vendor/**' --exclude '*.min.js' \
-            --text --output semgrep.txt . || { echo "Semgrep itself failed"; exit 1; }
-          cat semgrep.txt
-          { echo "### Code security scan (Semgrep)"; echo '```'; tail -c 60000 semgrep.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          echo ".semgrep-rules/" >> .git/info/exclude
+          args=(--metrics=off --disable-version-check --oss-only --config .semgrep-rules/python/lang/security --config .semgrep-rules/python/flask/security --config .semgrep-rules/python/requests/security --config .semgrep-rules/python/jwt/security --config .semgrep-rules/python/cryptography/security --config .semgrep-rules/python/pycryptodome/security --config .semgrep-rules/python/jinja2/security --config .semgrep-rules/python/fastapi/security --config .semgrep-rules/javascript/browser/security --config .semgrep-rules/javascript/lang/security --config .semgrep-rules/javascript/jquery/security --config .semgrep-rules/javascript/jsonwebtoken/security --config .semgrep-rules/html/security --config .semgrep-rules/dockerfile/security --config .semgrep-rules/bash/lang/security --config .semgrep-rules/bash/curl/security
+                --exclude .semgrep-rules --exclude tests --exclude '**/vendor/**' --exclude '*.min.js' --text --output "$RUNNER_TEMP/semgrep.txt")
+          if [ -n "$BASE" ]; then
+            set +e; semgrep scan "${args[@]}" --baseline-commit "$BASE" --severity ERROR --error .; rc=$?; set -e
+            title="new high-severity findings in this pull request"
+          else
+            set +e; semgrep scan "${args[@]}" .; rc=$?; set -e
+            title="full scan, report only"
+          fi
+          cat "$RUNNER_TEMP/semgrep.txt"
+          { echo "### Code security scan (Semgrep): $title"; echo '```'; tail -c 60000 "$RUNNER_TEMP/semgrep.txt"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          if [ "$rc" -eq 1 ] && [ -n "$BASE" ]; then echo "::error::This pull request adds a high-severity finding (above). Fix it, or if it is truly safe add a one-line 'nosemgrep: <rule> -- <reason>' for Security Light to review."; exit 1; fi
+          if [ "$rc" -ne 0 ]; then echo "::error::Semgrep itself failed (exit $rc)"; exit 1; fi
